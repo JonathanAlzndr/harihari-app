@@ -1,6 +1,6 @@
 package com.alezandrow.simplecleanarchitecture.domain.entities
 
-enum class NoteStatus {
+enum class TaskStatus {
     DONE,
     NEW
 }
