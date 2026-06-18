@@ -5,19 +5,18 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Update
-import com.alezandrow.simplecleanarchitecture.domain.entities.Task
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDao {
 
     @Insert(onConflict = REPLACE)
-    suspend fun addNewTask(task: Task)
+    suspend fun addNewTask(task: TaskDbEntity)
 
     @Query("SELECT * FROM task")
-    fun getAllTasks(): Flow<List<Task>>
+    fun getAllTasks(): Flow<List<TaskDbEntity>>
 
     @Update
-    suspend fun changeTaskStatus(task: Task)
+    suspend fun changeTaskStatus(task: TaskDbEntity)
 
 }
