@@ -2,7 +2,8 @@ package com.alezandrow.simplecleanarchitecture.domain.usecase
 
 import com.alezandrow.simplecleanarchitecture.domain.entities.Task
 import com.alezandrow.simplecleanarchitecture.domain.repository.ITaskRepository
+import javax.inject.Inject
 
-class ChangeTaskStatusUseCase(private val repository: ITaskRepository) {
+class ChangeTaskStatusUseCase @Inject constructor (private val repository: ITaskRepository) {
     suspend operator fun invoke(task: Task) = repository.changeTaskStatus(task)
 }

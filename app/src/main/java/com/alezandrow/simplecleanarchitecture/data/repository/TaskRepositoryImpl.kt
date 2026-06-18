@@ -7,8 +7,9 @@ import com.alezandrow.simplecleanarchitecture.domain.entities.Task
 import com.alezandrow.simplecleanarchitecture.domain.repository.ITaskRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class TaskRepositoryImpl (private val taskDao: TaskDao) : ITaskRepository {
+class TaskRepositoryImpl @Inject constructor(private val taskDao: TaskDao) : ITaskRepository {
     override suspend fun addNewTask(task: Task) {
         val dbEntity = task.toDbEntity()
         taskDao.addNewTask(dbEntity)
