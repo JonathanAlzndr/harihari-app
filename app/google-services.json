@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "257619721496",
+    "project_id": "harihari-app",
+    "storage_bucket": "harihari-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257619721496:android:96f8a654799b992b54b26d",
+        "android_client_info": {
+          "package_name": "com.alezandrow.simplecleanarchitecture"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7kyootlUZfAgTnSW2RYAoFtjaKrW9Kzg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
