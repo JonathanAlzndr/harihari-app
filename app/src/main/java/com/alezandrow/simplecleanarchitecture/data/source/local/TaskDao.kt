@@ -1,6 +1,7 @@
 package com.alezandrow.simplecleanarchitecture.data.source.local
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
@@ -18,5 +19,8 @@ interface TaskDao {
 
     @Update
     suspend fun changeTaskStatus(task: TaskDbEntity)
+
+    @Delete
+    suspend fun deleteTask(task: TaskDbEntity)
 
 }

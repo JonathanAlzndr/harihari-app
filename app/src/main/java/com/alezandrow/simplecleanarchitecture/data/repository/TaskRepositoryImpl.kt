@@ -25,4 +25,9 @@ class TaskRepositoryImpl @Inject constructor(private val taskDao: TaskDao) : ITa
             listFromDb.map { it.toDomain() }
         }
     }
+
+    override suspend fun deleteTask(task: Task) {
+        val dbEntity = task.toDbEntity()
+        taskDao.deleteTask(dbEntity)
+    }
 }
