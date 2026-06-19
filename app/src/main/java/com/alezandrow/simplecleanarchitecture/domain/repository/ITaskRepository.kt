@@ -11,4 +11,6 @@ interface ITaskRepository {
 
     fun getAllTasks(): Flow<List<Task>>
 
+    suspend fun deleteTask(task: Task)
+
 }
