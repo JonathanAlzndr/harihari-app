@@ -18,6 +18,7 @@ fun TaskDbEntity.toDomain(): Task {
 
 fun Task.toDbEntity(): TaskDbEntity {
     return TaskDbEntity(
+        id = id,
         description = description,
         status = status.name
     )
