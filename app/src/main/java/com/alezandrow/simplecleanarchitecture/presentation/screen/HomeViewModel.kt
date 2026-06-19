@@ -6,6 +6,7 @@ import com.alezandrow.simplecleanarchitecture.domain.entities.Task
 import com.alezandrow.simplecleanarchitecture.domain.entities.TaskStatus
 import com.alezandrow.simplecleanarchitecture.domain.usecase.AddNewTaskUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.ChangeTaskStatusUseCase
+import com.alezandrow.simplecleanarchitecture.domain.usecase.DeleteTaskUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.GetAllTasksUseCase
 import com.alezandrow.simplecleanarchitecture.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val addNewTaskUseCase: AddNewTaskUseCase,
     private val changeTaskStatusUseCase: ChangeTaskStatusUseCase,
-    private val getAllTasksUseCase: GetAllTasksUseCase
+    private val getAllTasksUseCase: GetAllTasksUseCase,
+    private val deleteTaskUseCase: DeleteTaskUseCase
 ) : ViewModel() {
 
     val taskUiState = getAllTasksUseCase()
@@ -42,6 +44,12 @@ class HomeViewModel @Inject constructor(
     fun addNewTask(task: Task) {
         viewModelScope.launch {
             addNewTaskUseCase(task)
+        }
+    }
+
+    fun deleteTask(task: Task) {
+        viewModelScope.launch {
+            deleteTaskUseCase(task)
         }
     }
 }
