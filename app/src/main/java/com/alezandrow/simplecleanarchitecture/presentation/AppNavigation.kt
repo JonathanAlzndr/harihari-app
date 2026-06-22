@@ -13,14 +13,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.alezandrow.simplecleanarchitecture.presentation.components.AddTaskDialog
+import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeRoute
 import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeScreen
 import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeViewModel
+import com.alezandrow.simplecleanarchitecture.presentation.screen.login.LoginRoute
+import com.alezandrow.simplecleanarchitecture.presentation.screen.login.LoginScreen
+import com.alezandrow.simplecleanarchitecture.presentation.screen.register.RegisterRoute
+import com.alezandrow.simplecleanarchitecture.presentation.screen.register.RegisterScreen
 
 @Composable
 fun AppNavigation(modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltViewModel()) {
 
     var showDialog by remember { mutableStateOf(false) }
+    val navController = rememberNavController()
 
     Scaffold(
         modifier,
@@ -33,10 +42,23 @@ fun AppNavigation(modifier: Modifier = Modifier, viewModel: HomeViewModel = hilt
             }
         }
     ) { innerPadding ->
-        HomeScreen(Modifier.padding(innerPadding), viewModel)
+        NavHost(navController = navController, startDestination = HomeRoute) {
 
-        if (showDialog) {
-            AddTaskDialog(onConfirmation = viewModel::addNewTask, { showDialog = false })
+            composable<HomeRoute> {
+                HomeScreen(Modifier.padding(innerPadding), viewModel)
+
+                if (showDialog) {
+                    AddTaskDialog(onConfirmation = viewModel::addNewTask, { showDialog = false })
+                }
+            }
+
+            composable<RegisterRoute> {
+                RegisterScreen(Modifier.padding(innerPadding))
+            }
+
+            composable<LoginRoute> {
+                LoginScreen(Modifier.padding(innerPadding))
+            }
         }
 
     }
