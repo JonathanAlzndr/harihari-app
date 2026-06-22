@@ -3,7 +3,6 @@ package com.alezandrow.simplecleanarchitecture.presentation.screen.register
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
-import com.alezandrow.simplecleanarchitecture.domain.result.AppError
 import com.alezandrow.simplecleanarchitecture.domain.result.AppResult
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignUpUseCase
 import com.alezandrow.simplecleanarchitecture.domain.validation.ValidationResult
@@ -11,6 +10,7 @@ import com.alezandrow.simplecleanarchitecture.domain.validation.validator.Valida
 import com.alezandrow.simplecleanarchitecture.domain.validation.validator.ValidatePasswordUseCase
 import com.alezandrow.simplecleanarchitecture.presentation.state.AuthUiState
 import com.alezandrow.simplecleanarchitecture.presentation.state.RegisterFormState
+import com.alezandrow.simplecleanarchitecture.presentation.util.mapAppErrorToMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -82,14 +82,4 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
-    private fun mapAppErrorToMessage(error: AppError): String {
-        return when (error) {
-            is AppError.Network -> "Connection issue"
-            is AppError.InvalidCredentials -> "Email or password wrong."
-            is AppError.UserNotFound -> "Account is not found"
-            is AppError.EmailAlreadyInUse -> "Email is already in use."
-            is AppError.Validation -> error.message
-            is AppError.Unknown -> error.message
-        }
-    }
 }
