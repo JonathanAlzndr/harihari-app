@@ -1,4 +1,4 @@
-package com.alezandrow.simplecleanarchitecture.domain.entities
+package com.alezandrow.simplecleanarchitecture.domain.entities.task
 
 data class Task(
     val id: Int = 0,

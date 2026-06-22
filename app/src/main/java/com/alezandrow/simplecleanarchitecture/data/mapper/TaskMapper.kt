@@ -1,8 +1,8 @@
 package com.alezandrow.simplecleanarchitecture.data.mapper
 
 import com.alezandrow.simplecleanarchitecture.data.source.local.TaskDbEntity
-import com.alezandrow.simplecleanarchitecture.domain.entities.Task
-import com.alezandrow.simplecleanarchitecture.domain.entities.TaskStatus
+import com.alezandrow.simplecleanarchitecture.domain.entities.task.Task
+import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskStatus
 
 fun TaskDbEntity.toDomain(): Task {
     return Task(
