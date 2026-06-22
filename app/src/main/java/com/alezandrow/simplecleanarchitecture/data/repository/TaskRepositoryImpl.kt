@@ -3,13 +3,13 @@ package com.alezandrow.simplecleanarchitecture.data.repository
 import com.alezandrow.simplecleanarchitecture.data.mapper.toDbEntity
 import com.alezandrow.simplecleanarchitecture.data.mapper.toDomain
 import com.alezandrow.simplecleanarchitecture.data.source.local.TaskDao
-import com.alezandrow.simplecleanarchitecture.domain.entities.Task
-import com.alezandrow.simplecleanarchitecture.domain.repository.ITaskRepository
+import com.alezandrow.simplecleanarchitecture.domain.entities.task.Task
+import com.alezandrow.simplecleanarchitecture.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class TaskRepositoryImpl @Inject constructor(private val taskDao: TaskDao) : ITaskRepository {
+class TaskRepositoryImpl @Inject constructor(private val taskDao: TaskDao) : TaskRepository {
     override suspend fun addNewTask(task: Task) {
         val dbEntity = task.toDbEntity()
         taskDao.addNewTask(dbEntity)

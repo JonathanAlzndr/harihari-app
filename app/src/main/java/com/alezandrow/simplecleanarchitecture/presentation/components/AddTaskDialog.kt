@@ -25,8 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.alezandrow.simplecleanarchitecture.domain.entities.Task
-import com.alezandrow.simplecleanarchitecture.domain.entities.TaskStatus
+import com.alezandrow.simplecleanarchitecture.domain.entities.task.Task
+import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -25,8 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import com.alezandrow.simplecleanarchitecture.domain.entities.Task
-import com.alezandrow.simplecleanarchitecture.domain.entities.TaskStatus
+import com.alezandrow.simplecleanarchitecture.domain.entities.task.Task
+import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskStatus
 
 @Composable
 fun TaskCard(

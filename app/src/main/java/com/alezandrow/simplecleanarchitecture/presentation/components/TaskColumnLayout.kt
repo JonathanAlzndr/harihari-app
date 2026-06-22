@@ -10,7 +10,7 @@ import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.alezandrow.simplecleanarchitecture.domain.entities.Task
+import com.alezandrow.simplecleanarchitecture.domain.entities.task.Task
 
 @Composable
 fun TaskColumnLayout(

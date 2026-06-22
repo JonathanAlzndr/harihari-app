@@ -14,8 +14,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.alezandrow.simplecleanarchitecture.presentation.components.AddTaskDialog
-import com.alezandrow.simplecleanarchitecture.presentation.screen.HomeScreen
-import com.alezandrow.simplecleanarchitecture.presentation.screen.HomeViewModel
+import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeScreen
+import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeViewModel
 
 @Composable
 fun AppNavigation(modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltViewModel()) {
