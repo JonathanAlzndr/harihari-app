@@ -1,0 +1,95 @@
+package com.alezandrow.simplecleanarchitecture.presentation.screen.register
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
+import com.alezandrow.simplecleanarchitecture.domain.result.AppError
+import com.alezandrow.simplecleanarchitecture.domain.result.AppResult
+import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignUpUseCase
+import com.alezandrow.simplecleanarchitecture.domain.validation.ValidationResult
+import com.alezandrow.simplecleanarchitecture.domain.validation.validator.ValidateEmailUseCase
+import com.alezandrow.simplecleanarchitecture.domain.validation.validator.ValidatePasswordUseCase
+import com.alezandrow.simplecleanarchitecture.presentation.state.AuthUiState
+import com.alezandrow.simplecleanarchitecture.presentation.state.RegisterFormState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class RegisterViewModel @Inject constructor(
+    private val signUpUseCase: SignUpUseCase,
+    private val validateEmailUseCase: ValidateEmailUseCase,
+    private val validatePasswordUseCase: ValidatePasswordUseCase
+) : ViewModel() {
+
+    private var _authUiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
+    val authUiState = _authUiState.asStateFlow()
+
+    private val _formState = MutableStateFlow(RegisterFormState())
+    val formState = _formState.asStateFlow()
+
+    fun onEmailChanged(newValue: String) {
+        _formState.update { it.copy(email = newValue) }
+    }
+
+    fun onPasswordChanged(newValue: String) {
+        _formState.update { it.copy(password = newValue, passwordError = null) }
+    }
+
+    fun onConfirmPasswordChanged(newValue: String) {
+        _formState.update { it.copy(confirmPassword = newValue, passwordError = null) }
+    }
+
+    fun signUp() {
+
+        val currentForm = _formState.value
+
+        val emailResult = validateEmailUseCase(currentForm.email)
+        val passwordResult = validatePasswordUseCase(currentForm.password)
+        val hasPasswordMatch = currentForm.password == currentForm.confirmPassword
+
+        val hasError = listOf(
+            emailResult,
+            passwordResult,
+            hasPasswordMatch
+        ).any { it is ValidationResult.Error } || !hasPasswordMatch
+
+        if (hasError) {
+            _formState.update {
+                it.copy(
+                    emailError = (emailResult as? ValidationResult.Error)?.message,
+                    passwordError = (passwordResult as? ValidationResult.Error)?.message,
+                    confirmPasswordError = if(!hasPasswordMatch) "Password is not matching" else null
+                )
+            }
+            return
+        }
+
+        _authUiState.update { AuthUiState.Loading }
+
+        viewModelScope.launch {
+            when(val result = signUpUseCase(currentForm.email, currentForm.password)) {
+                is AppResult.Error -> {
+                    _authUiState.value = AuthUiState.Error(mapAppErrorToMessage(result.error))
+                }
+                is AppResult.Success<AuthUser> -> {
+                    _authUiState.value = AuthUiState.Success(result.data)
+                }
+            }
+        }
+    }
+
+    private fun mapAppErrorToMessage(error: AppError): String {
+        return when (error) {
+            is AppError.Network -> "Connection issue"
+            is AppError.InvalidCredentials -> "Email or password wrong."
+            is AppError.UserNotFound -> "Account is not found"
+            is AppError.EmailAlreadyInUse -> "Email is already in use."
+            is AppError.Validation -> error.message
+            is AppError.Unknown -> error.message
+        }
+    }
+}
