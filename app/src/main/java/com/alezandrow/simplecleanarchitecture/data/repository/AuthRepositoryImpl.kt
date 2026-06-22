@@ -18,7 +18,7 @@ class AuthRepositoryImpl @Inject constructor(
     ): AppResult<AuthUser> {
         return try {
             val authResult = authDataSource.signIn(email, password)
-            AppResult.Success(authResult.toAuthUser())
+            AppResult.Success(authResult.toAuthUser(getIdToken = true))
         } catch(e: Exception) {
             Log.d(TAG, "signIn: $e")
             AppResult.Error(FirebaseAuthErrorMapper.map(e))

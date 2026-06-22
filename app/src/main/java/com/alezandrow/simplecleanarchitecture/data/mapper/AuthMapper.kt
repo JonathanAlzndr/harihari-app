@@ -6,13 +6,20 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import kotlinx.coroutines.tasks.await
 import java.io.IOException
 
-fun AuthResult.toAuthUser(): AuthUser {
+suspend fun AuthResult.toAuthUser(getIdToken: Boolean = false): AuthUser {
     val user = requireNotNull(this.user)
+    val token = if(getIdToken) {
+        user.getIdToken(true).await().token.orEmpty()
+    } else {
+        ""
+    }
     return AuthUser(
         uid = user.uid,
-        email = user.email.orEmpty()
+        email = user.email.orEmpty(),
+        token = token
     )
 }
 
