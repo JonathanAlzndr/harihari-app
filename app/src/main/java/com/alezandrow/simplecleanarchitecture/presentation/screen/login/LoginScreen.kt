@@ -1,6 +1,5 @@
 package com.alezandrow.simplecleanarchitecture.presentation.screen.login
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,14 +9,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,28 +23,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.alezandrow.simplecleanarchitecture.presentation.components.EmailInputText
-import com.alezandrow.simplecleanarchitecture.presentation.components.PasswordInputText
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alezandrow.simplecleanarchitecture.presentation.component.EmailInputText
+import com.alezandrow.simplecleanarchitecture.presentation.component.LoadingLayout
+import com.alezandrow.simplecleanarchitecture.presentation.component.PasswordInputText
 import com.alezandrow.simplecleanarchitecture.presentation.state.AuthUiState
 
 @Composable
 fun LoginScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel = hiltViewModel()) {
 
-    val authUiState by viewModel.authUiState.collectAsState()
-    val formState by viewModel.loginFormState.collectAsState()
+    val authUiState by viewModel.authUiState.collectAsStateWithLifecycle()
+    val formState by viewModel.loginFormState.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(authUiState) {
-        when (authUiState) {
-            is AuthUiState.Error -> {
-                snackbarHostState.showSnackbar((authUiState as AuthUiState.Error).message)
-            }
-            AuthUiState.Idle -> {}
-            AuthUiState.Loading -> {}
-            is AuthUiState.Success -> {
-                snackbarHostState.showSnackbar("Success")
-            }
+        if (authUiState is AuthUiState.Error) {
+            snackbarHostState.showSnackbar((authUiState as AuthUiState.Error).message)
         }
     }
 
@@ -101,14 +93,7 @@ fun LoginScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel = hiltV
         }
 
         if (authUiState is AuthUiState.Loading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
+            LoadingLayout(modifier = Modifier.fillMaxSize())
         }
 
         SnackbarHost(

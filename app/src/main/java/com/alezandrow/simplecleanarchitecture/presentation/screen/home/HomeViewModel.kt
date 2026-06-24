@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.Task
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskStatus
+import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignOutUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.task.AddNewTaskUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.task.ChangeTaskStatusUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.task.DeleteTaskUseCase
@@ -21,7 +22,8 @@ class HomeViewModel @Inject constructor(
     private val addNewTaskUseCase: AddNewTaskUseCase,
     private val changeTaskStatusUseCase: ChangeTaskStatusUseCase,
     private val getAllTasksUseCase: GetAllTasksUseCase,
-    private val deleteTaskUseCase: DeleteTaskUseCase
+    private val deleteTaskUseCase: DeleteTaskUseCase,
+    private val signOutUseCase: SignOutUseCase,
 ) : ViewModel() {
 
     val taskUiState = getAllTasksUseCase()
@@ -38,6 +40,12 @@ class HomeViewModel @Inject constructor(
                 status = if (task.status == TaskStatus.DONE) TaskStatus.NEW else TaskStatus.DONE
             )
             changeTaskStatusUseCase(updatedTask)
+        }
+    }
+
+    fun signOut() {
+        viewModelScope.launch {
+            signOutUseCase()
         }
     }
 

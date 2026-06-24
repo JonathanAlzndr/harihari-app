@@ -10,4 +10,6 @@ sealed interface Destination {
     object LoginRoute: Destination
     @Serializable
     object RegisterRoute: Destination
+    @Serializable
+    object Root: Destination
 }

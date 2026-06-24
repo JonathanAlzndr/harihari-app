@@ -15,9 +15,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,15 +26,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.alezandrow.simplecleanarchitecture.presentation.components.EmailInputText
-import com.alezandrow.simplecleanarchitecture.presentation.components.PasswordInputText
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alezandrow.simplecleanarchitecture.presentation.component.EmailInputText
+import com.alezandrow.simplecleanarchitecture.presentation.component.PasswordInputText
 import com.alezandrow.simplecleanarchitecture.presentation.state.AuthUiState
 
 @Composable
-fun RegisterScreen(modifier: Modifier = Modifier, viewModel: RegisterViewModel = hiltViewModel()) {
+fun RegisterScreen(navigateToLogin: () -> Unit, modifier: Modifier = Modifier, viewModel: RegisterViewModel = hiltViewModel()) {
 
-    val authUiState by viewModel.authUiState.collectAsState()
-    val formState by viewModel.formState.collectAsState()
+    val authUiState by viewModel.authUiState.collectAsStateWithLifecycle()
+    val formState by viewModel.formState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(authUiState) {
@@ -44,9 +45,6 @@ fun RegisterScreen(modifier: Modifier = Modifier, viewModel: RegisterViewModel =
             }
             AuthUiState.Idle -> {}
             AuthUiState.Loading -> {}
-            is AuthUiState.Success -> {
-                snackbarHostState.showSnackbar("Success")
-            }
         }
     }
 
@@ -107,6 +105,17 @@ fun RegisterScreen(modifier: Modifier = Modifier, viewModel: RegisterViewModel =
                 enabled = authUiState !is AuthUiState.Loading
             ) {
                 Text(text = "Sign Up")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            TextButton(
+                onClick = navigateToLogin
+            ) {
+                Text(
+                    text = "Already have an account? Go to Login",
+                    style = MaterialTheme.typography.headlineSmall
+                )
             }
         }
 

@@ -76,7 +76,7 @@ class RegisterViewModel @Inject constructor(
                     _authUiState.value = AuthUiState.Error(mapAppErrorToMessage(result.error))
                 }
                 is AppResult.Success<AuthUser> -> {
-                    _authUiState.value = AuthUiState.Success(result.data)
+                    _authUiState.value = AuthUiState.Idle
                 }
             }
         }

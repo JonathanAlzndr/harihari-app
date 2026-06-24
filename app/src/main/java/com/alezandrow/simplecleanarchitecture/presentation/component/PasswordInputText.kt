@@ -1,4 +1,4 @@
-package com.alezandrow.simplecleanarchitecture.presentation.components
+package com.alezandrow.simplecleanarchitecture.presentation.component
 
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons

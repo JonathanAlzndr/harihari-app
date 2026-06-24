@@ -1,4 +1,4 @@
-package com.alezandrow.simplecleanarchitecture.presentation.components
+package com.alezandrow.simplecleanarchitecture.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

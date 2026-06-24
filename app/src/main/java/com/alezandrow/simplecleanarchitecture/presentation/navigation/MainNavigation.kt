@@ -1,4 +1,4 @@
-package com.alezandrow.simplecleanarchitecture.presentation
+package com.alezandrow.simplecleanarchitecture.presentation.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -16,20 +16,18 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.alezandrow.simplecleanarchitecture.presentation.components.AddTaskDialog
+import com.alezandrow.simplecleanarchitecture.presentation.component.AddTaskDialog
+import com.alezandrow.simplecleanarchitecture.presentation.component.TopNavigationBar
 import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeScreen
 import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeViewModel
-import com.alezandrow.simplecleanarchitecture.presentation.screen.login.LoginScreen
-import com.alezandrow.simplecleanarchitecture.presentation.screen.register.RegisterScreen
 
 @Composable
-fun AppNavigation(modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltViewModel()) {
+fun MainNavigation(viewModel: HomeViewModel = hiltViewModel()) {
 
     var showDialog by remember { mutableStateOf(false) }
     val navController = rememberNavController()
 
     Scaffold(
-        modifier,
         floatingActionButton = {
             FloatingActionButton(onClick = { showDialog = true }) {
                 Icon(
@@ -37,24 +35,21 @@ fun AppNavigation(modifier: Modifier = Modifier, viewModel: HomeViewModel = hilt
                     contentDescription = "Add Task"
                 )
             }
+        },
+        topBar = {
+            TopNavigationBar(onActionClick = viewModel::signOut)
         }
     ) { innerPadding ->
-        NavHost(navController = navController, startDestination = HomeRoute) {
 
-            composable<HomeRoute> {
+        NavHost(navController = navController, startDestination = Destination.HomeRoute) {
+            composable<Destination.HomeRoute> {
                 HomeScreen(Modifier.padding(innerPadding), viewModel)
-
                 if (showDialog) {
-                    AddTaskDialog(onConfirmation = viewModel::addNewTask, { showDialog = false })
+                    AddTaskDialog(
+                        onConfirmation = viewModel::addNewTask,
+                        onDismissRequest = { showDialog = false }
+                    )
                 }
-            }
-
-            composable<RegisterRoute> {
-                RegisterScreen(Modifier.padding(innerPadding))
-            }
-
-            composable<LoginRoute> {
-                LoginScreen(Modifier.padding(innerPadding))
             }
         }
 
