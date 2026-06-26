@@ -2,8 +2,8 @@ package com.alezandrow.simplecleanarchitecture.presentation.screen.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
 import com.alezandrow.simplecleanarchitecture.common.AppResult
+import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.RefreshCurrentUserUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignInUseCase
 import com.alezandrow.simplecleanarchitecture.domain.validation.ValidationResult

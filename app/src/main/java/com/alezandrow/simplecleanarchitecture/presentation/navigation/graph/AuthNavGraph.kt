@@ -11,6 +11,7 @@ import androidx.navigation.toRoute
 import com.alezandrow.simplecleanarchitecture.presentation.navigation.destination.Destination
 import com.alezandrow.simplecleanarchitecture.presentation.screen.login.LoginScreen
 import com.alezandrow.simplecleanarchitecture.presentation.screen.register.RegisterScreen
+import com.alezandrow.simplecleanarchitecture.presentation.screen.reset_password.ResetPasswordScreen
 import com.alezandrow.simplecleanarchitecture.presentation.screen.verify.VerifyEmailScreen
 
 @Composable
@@ -23,7 +24,10 @@ fun AuthNavGraph(initialRoute: Destination = Destination.RegisterRoute) {
         NavHost(navController = navController, startDestination = initialRoute) {
 
             composable<Destination.LoginRoute> {
-                LoginScreen(modifier = Modifier.padding(innerPadding))
+                LoginScreen(
+                    navigateToRequestResetPassword = { navController.navigate(Destination.ResetPasswordRoute) },
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
 
             composable<Destination.RegisterRoute> {
@@ -31,14 +35,18 @@ fun AuthNavGraph(initialRoute: Destination = Destination.RegisterRoute) {
                     modifier = Modifier.padding(innerPadding),
                     navigateToLogin = { navController.navigate(Destination.LoginRoute) },
                     navigateToVerify = { email ->
-                        navController.navigate(Destination.Verify(email))
+                        navController.navigate(Destination.VerifyRoute(email))
                     }
                 )
             }
 
-            composable<Destination.Verify> { backStackEntry ->
-                val verifyEmail: Destination.Verify = backStackEntry.toRoute()
-                VerifyEmailScreen(email = verifyEmail.email)
+            composable<Destination.VerifyRoute> { backStackEntry ->
+                val verifyRouteEmail: Destination.VerifyRoute = backStackEntry.toRoute()
+                VerifyEmailScreen(email = verifyRouteEmail.email)
+            }
+
+            composable<Destination.ResetPasswordRoute> {
+                ResetPasswordScreen(modifier = Modifier.padding(innerPadding))
             }
 
         }

@@ -59,4 +59,8 @@ class AuthRepositoryImpl @Inject constructor(
         return authDataSource.refreshCurrentUser()
     }
 
+    override suspend fun requestPasswordReset(email: String) {
+        authDataSource.requestPasswordReset(email)
+    }
+
 }

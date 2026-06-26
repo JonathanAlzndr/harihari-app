@@ -53,4 +53,8 @@ class FirebaseAuthDataSource @Inject constructor(private val auth: FirebaseAuth)
         return user
     }
 
+    suspend fun requestPasswordReset(email: String) {
+        auth.sendPasswordResetEmail(email).await()
+    }
+
 }

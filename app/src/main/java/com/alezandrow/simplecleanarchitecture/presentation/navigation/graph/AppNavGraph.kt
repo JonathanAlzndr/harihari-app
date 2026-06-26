@@ -17,7 +17,7 @@ fun AppNavGraph(
     when (val state = sessionState) {
         is SessionState.Authenticated<AuthUser> -> {
             if (state.data.isEmailVerified) MainNavGraph()
-            else AuthNavGraph(initialRoute = Destination.Verify(state.data.email))
+            else AuthNavGraph(initialRoute = Destination.VerifyRoute(state.data.email))
         }
         SessionState.Loading -> {}
         SessionState.Unauthenticated -> AuthNavGraph()

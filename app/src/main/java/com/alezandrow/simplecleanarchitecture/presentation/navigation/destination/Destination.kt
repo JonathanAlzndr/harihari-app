@@ -14,8 +14,7 @@ sealed interface Destination {
     object RegisterRoute : Destination
 
     @Serializable
-    object Root : Destination
-
+    data class VerifyRoute(val email: String) : Destination
     @Serializable
-    data class Verify(val email: String) : Destination
+    data object ResetPasswordRoute: Destination
 }
