@@ -1,9 +1,7 @@
 package com.alezandrow.simplecleanarchitecture.presentation.state
 
-import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
-
-sealed class SessionState {
-    data object Loading : SessionState()
-    data object Unauthenticated : SessionState()
-    data class Authenticated(val user: AuthUser) : SessionState()
+sealed class SessionState<out T> {
+    data object Loading : SessionState<Nothing>()
+    data object Unauthenticated : SessionState<Nothing>()
+    data class Authenticated<T>(val data: T) : SessionState<T>()
 }

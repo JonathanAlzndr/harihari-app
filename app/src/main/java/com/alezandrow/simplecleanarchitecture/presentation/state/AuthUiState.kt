@@ -9,4 +9,6 @@ sealed class AuthUiState {
     data class Error(
         val message: String
     ) : AuthUiState()
+
+    data object Success : AuthUiState()
 }
