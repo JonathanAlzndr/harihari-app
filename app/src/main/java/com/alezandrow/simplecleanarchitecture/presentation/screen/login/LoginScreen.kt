@@ -53,7 +53,7 @@ fun LoginScreen(modifier: Modifier = Modifier, viewModel: LoginViewModel = hiltV
         ) {
 
             Text(
-                text = "Login",
+                text = "Sign In",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold
             )

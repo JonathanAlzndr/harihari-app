@@ -3,7 +3,9 @@ package com.alezandrow.simplecleanarchitecture.presentation.screen.register
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
-import com.alezandrow.simplecleanarchitecture.domain.result.AppResult
+import com.alezandrow.simplecleanarchitecture.common.AppResult
+import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.RefreshCurrentUserUseCase
+import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SendEmailVerificationUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignUpUseCase
 import com.alezandrow.simplecleanarchitecture.domain.validation.ValidationResult
 import com.alezandrow.simplecleanarchitecture.domain.validation.validator.ValidateEmailUseCase
@@ -22,7 +24,9 @@ import javax.inject.Inject
 class RegisterViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
-    private val validatePasswordUseCase: ValidatePasswordUseCase
+    private val validatePasswordUseCase: ValidatePasswordUseCase,
+    private val sendEmailVerificationUseCase: SendEmailVerificationUseCase,
+    private val refreshCurrentUserUseCase: RefreshCurrentUserUseCase
 ) : ViewModel() {
 
     private var _authUiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
@@ -76,7 +80,8 @@ class RegisterViewModel @Inject constructor(
                     _authUiState.value = AuthUiState.Error(mapAppErrorToMessage(result.error))
                 }
                 is AppResult.Success<AuthUser> -> {
-                    _authUiState.value = AuthUiState.Idle
+                    sendEmailVerificationUseCase()
+                    _authUiState.value = AuthUiState.Success
                 }
             }
         }

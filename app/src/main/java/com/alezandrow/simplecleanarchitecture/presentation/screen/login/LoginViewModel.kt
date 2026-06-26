@@ -3,7 +3,8 @@ package com.alezandrow.simplecleanarchitecture.presentation.screen.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
-import com.alezandrow.simplecleanarchitecture.domain.result.AppResult
+import com.alezandrow.simplecleanarchitecture.common.AppResult
+import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.RefreshCurrentUserUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignInUseCase
 import com.alezandrow.simplecleanarchitecture.domain.validation.ValidationResult
 import com.alezandrow.simplecleanarchitecture.domain.validation.validator.ValidateEmailUseCase
@@ -22,7 +23,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
-    private val validatePasswordUseCase: ValidatePasswordUseCase
+    private val validatePasswordUseCase: ValidatePasswordUseCase,
+    private val refreshCurrentUserUseCase: RefreshCurrentUserUseCase
 ) : ViewModel() {
 
     private var _authUiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
@@ -64,7 +66,12 @@ class LoginViewModel @Inject constructor(
                     _authUiState.value = AuthUiState.Error(mapAppErrorToMessage(result.error))
                 }
                 is AppResult.Success<AuthUser> -> {
-                    _authUiState.value = AuthUiState.Idle
+                    val refreshedUser =  refreshCurrentUserUseCase()
+                    if(refreshedUser?.isEmailVerified == true) {
+                        _authUiState.value = AuthUiState.Success
+                    } else {
+                        _authUiState.value = AuthUiState.Error("Email belum diverifikasi")
+                    }
                 }
             }
         }

@@ -1,6 +1,5 @@
 package com.alezandrow.simplecleanarchitecture.presentation.screen.register
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -24,15 +22,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alezandrow.simplecleanarchitecture.presentation.component.EmailInputText
+import com.alezandrow.simplecleanarchitecture.presentation.component.LoadingLayout
 import com.alezandrow.simplecleanarchitecture.presentation.component.PasswordInputText
 import com.alezandrow.simplecleanarchitecture.presentation.state.AuthUiState
 
 @Composable
-fun RegisterScreen(navigateToLogin: () -> Unit, modifier: Modifier = Modifier, viewModel: RegisterViewModel = hiltViewModel()) {
+fun RegisterScreen(
+    navigateToLogin: () -> Unit,
+    navigateToVerify: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: RegisterViewModel = hiltViewModel()
+) {
 
     val authUiState by viewModel.authUiState.collectAsStateWithLifecycle()
     val formState by viewModel.formState.collectAsStateWithLifecycle()
@@ -40,11 +45,15 @@ fun RegisterScreen(navigateToLogin: () -> Unit, modifier: Modifier = Modifier, v
 
     LaunchedEffect(authUiState) {
         when (authUiState) {
-            is AuthUiState.Error -> {
-                snackbarHostState.showSnackbar((authUiState as AuthUiState.Error).message)
+            AuthUiState.Success -> {
+                navigateToVerify(formState.email)
             }
-            AuthUiState.Idle -> {}
-            AuthUiState.Loading -> {}
+            is AuthUiState.Error -> {
+                snackbarHostState.showSnackbar(
+                    (authUiState as AuthUiState.Error).message
+                )
+            }
+            else -> Unit
         }
     }
 
@@ -58,7 +67,7 @@ fun RegisterScreen(navigateToLogin: () -> Unit, modifier: Modifier = Modifier, v
         ) {
 
             Text(
-                text = "Register",
+                text = "Sign Up",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -92,15 +101,17 @@ fun RegisterScreen(navigateToLogin: () -> Unit, modifier: Modifier = Modifier, v
                 onValueChange = { viewModel.onConfirmPasswordChanged(it) },
                 label = "Confirm Password",
                 imeAction = ImeAction.Done,
-                isError = formState.passwordError != null,
-                errorMessage = formState.passwordError,
+                isError = formState.confirmPasswordError != null,
+                errorMessage = formState.confirmPasswordError,
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { viewModel.signUp() },
+                onClick = {
+                    viewModel.signUp()
+                },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = authUiState !is AuthUiState.Loading
             ) {
@@ -110,24 +121,19 @@ fun RegisterScreen(navigateToLogin: () -> Unit, modifier: Modifier = Modifier, v
             Spacer(modifier = Modifier.height(16.dp))
 
             TextButton(
-                onClick = navigateToLogin
+                onClick = navigateToLogin,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "Already have an account? Go to Login",
-                    style = MaterialTheme.typography.headlineSmall
+                    text = "Already have an account? Go to SignIn",
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center
                 )
             }
         }
 
         if (authUiState is AuthUiState.Loading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
+            LoadingLayout(modifier = Modifier.fillMaxSize())
         }
 
         SnackbarHost(
