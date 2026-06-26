@@ -1,6 +1,6 @@
 package com.alezandrow.simplecleanarchitecture.presentation.util
 
-import com.alezandrow.simplecleanarchitecture.domain.result.AppError
+import com.alezandrow.simplecleanarchitecture.common.AppError
 
 fun mapAppErrorToMessage(error: AppError): String {
     return when (error) {
