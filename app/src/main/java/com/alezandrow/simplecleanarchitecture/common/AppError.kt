@@ -1,4 +1,4 @@
-package com.alezandrow.simplecleanarchitecture.domain.result
+package com.alezandrow.simplecleanarchitecture.common
 
 sealed interface AppError {
 
