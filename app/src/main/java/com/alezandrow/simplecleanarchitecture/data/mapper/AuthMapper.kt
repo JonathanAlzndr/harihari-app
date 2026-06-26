@@ -1,7 +1,7 @@
 package com.alezandrow.simplecleanarchitecture.data.mapper
 
+import com.alezandrow.simplecleanarchitecture.common.AppError
 import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
-import com.alezandrow.simplecleanarchitecture.domain.result.AppError
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -9,7 +9,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
 import java.io.IOException
 
-suspend fun AuthResult.toAuthUser(): AuthUser {
+fun AuthResult.toAuthUser(): AuthUser {
     val user = requireNotNull(this.user)
     return AuthUser(
         uid = user.uid,
@@ -21,6 +21,7 @@ fun FirebaseUser.toAuthUser(): AuthUser {
     return AuthUser(
         uid = uid,
         email = email.orEmpty(),
+        isEmailVerified = isEmailVerified
     )
 }
 
