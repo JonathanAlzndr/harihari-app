@@ -1,7 +1,7 @@
 package com.alezandrow.simplecleanarchitecture.domain.repository
 
+import com.alezandrow.simplecleanarchitecture.common.AppResult
 import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
-import com.alezandrow.simplecleanarchitecture.domain.result.AppResult
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
@@ -13,4 +13,7 @@ interface AuthRepository {
 
     fun observeCurrentUser(): Flow<AuthUser?>
 
+    suspend fun sendEmailVerification()
+
+    suspend fun refreshCurrentUser(): AuthUser?
 }
