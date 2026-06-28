@@ -14,8 +14,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.alezandrow.simplecleanarchitecture.presentation.component.AddTaskDialog
 import com.alezandrow.simplecleanarchitecture.presentation.component.BottomNavigationBar
@@ -31,33 +34,40 @@ fun MainNavGraph(viewModel: HomeViewModel = hiltViewModel()) {
 
     var showDialog by remember { mutableStateOf(false) }
     val navController = rememberNavController()
+    val currentDestination = navController.currentBackStackEntryAsState().value?.destination
+    val isAtHome = currentDestination?.hierarchy?.any {
+        it.hasRoute(Destination.HomeRoute::class)
+    } == true
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = { showDialog = true }) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Task"
-                )
+            if(isAtHome) {
+                FloatingActionButton(onClick = { showDialog = true }) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add Task"
+                    )
+                }
             }
         },
         bottomBar = {
             BottomNavigationBar(navController)
         },
         topBar = {
-            TopNavigationBar(onActionClick = viewModel::signOut)
+            TopNavigationBar(viewModel::signOut)
         }
     ) { innerPadding ->
+
+        if (showDialog) {
+            AddTaskDialog(
+                onConfirmation = viewModel::addNewTask,
+                onDismissRequest = { showDialog = false }
+            )
+        }
 
         NavHost(navController = navController, startDestination = Destination.HomeRoute) {
             composable<Destination.HomeRoute> {
                 HomeScreen(Modifier.padding(innerPadding), viewModel)
-                if (showDialog) {
-                    AddTaskDialog(
-                        onConfirmation = viewModel::addNewTask,
-                        onDismissRequest = { showDialog = false }
-                    )
-                }
             }
 
             composable<Destination.ProfileRoute> {

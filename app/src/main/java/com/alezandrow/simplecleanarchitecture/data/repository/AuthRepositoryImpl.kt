@@ -72,4 +72,13 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteAccount(): AppResult<String> {
+        return try {
+            authDataSource.deleteUser()
+            AppResult.Success("Account Deleted")
+        } catch(e: Exception) {
+            AppResult.Error(FirebaseAuthErrorMapper.map(e))
+        }
+    }
+
 }

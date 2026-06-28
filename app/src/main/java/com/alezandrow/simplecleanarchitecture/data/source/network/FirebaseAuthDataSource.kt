@@ -68,5 +68,8 @@ class FirebaseAuthDataSource @Inject constructor(private val auth: FirebaseAuth)
         auth.currentUser?.updatePassword(newPassword)?.await()
     }
 
+    suspend fun deleteUser() {
+        auth.currentUser!!.delete()
+    }
 
 }
