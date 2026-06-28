@@ -2,6 +2,7 @@ package com.alezandrow.simplecleanarchitecture.data.source.network
 
 import com.alezandrow.simplecleanarchitecture.data.mapper.toAuthUser
 import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,14 +48,25 @@ class FirebaseAuthDataSource @Inject constructor(private val auth: FirebaseAuth)
     }
 
     suspend fun refreshCurrentUser(): AuthUser? {
+
         auth.currentUser?.reload()?.await()
         val user = auth.currentUser?.toAuthUser()
         _currentUser.value = user
         return user
     }
 
-    suspend fun requestPasswordReset(email: String) {
+    suspend fun requestPasswordResetEmail(email: String) {
         auth.sendPasswordResetEmail(email).await()
     }
+
+    suspend fun updatePassword(currentPassword: String, newPassword: String) {
+        val user = auth.currentUser!!
+        val credential = EmailAuthProvider.getCredential(
+            user.email!!, currentPassword
+        )
+        user.reauthenticate(credential).await()
+        auth.currentUser?.updatePassword(newPassword)?.await()
+    }
+
 
 }

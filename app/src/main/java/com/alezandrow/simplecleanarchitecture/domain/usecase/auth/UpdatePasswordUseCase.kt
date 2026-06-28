@@ -3,8 +3,11 @@ package com.alezandrow.simplecleanarchitecture.domain.usecase.auth
 import com.alezandrow.simplecleanarchitecture.domain.repository.AuthRepository
 import javax.inject.Inject
 
-class RequestPasswordResetUseCase @Inject constructor(
+class UpdatePasswordUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
-    suspend operator fun invoke(email: String) = authRepository.requestPasswordResetEmail(email)
+
+    suspend operator fun invoke(currentPassword: String, newPassword: String) =
+        authRepository.updatePassword(currentPassword, newPassword)
+
 }

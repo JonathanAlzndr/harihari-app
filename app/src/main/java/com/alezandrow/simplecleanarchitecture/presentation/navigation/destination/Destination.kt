@@ -17,4 +17,8 @@ sealed interface Destination {
     data class VerifyRoute(val email: String) : Destination
     @Serializable
     data object ResetPasswordRoute: Destination
+    @Serializable
+    data object ProfileRoute : Destination
+    @Serializable
+    data object UpdatePasswordRoute : Destination
 }

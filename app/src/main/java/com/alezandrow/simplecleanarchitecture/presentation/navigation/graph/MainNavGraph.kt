@@ -12,15 +12,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.alezandrow.simplecleanarchitecture.presentation.component.AddTaskDialog
+import com.alezandrow.simplecleanarchitecture.presentation.component.BottomNavigationBar
 import com.alezandrow.simplecleanarchitecture.presentation.component.TopNavigationBar
 import com.alezandrow.simplecleanarchitecture.presentation.navigation.destination.Destination
 import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeScreen
 import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeViewModel
+import com.alezandrow.simplecleanarchitecture.presentation.screen.profile.ProfileScreen
+import com.alezandrow.simplecleanarchitecture.presentation.screen.update_password.UpdatePasswordScreen
 
 @Composable
 fun MainNavGraph(viewModel: HomeViewModel = hiltViewModel()) {
@@ -37,6 +41,9 @@ fun MainNavGraph(viewModel: HomeViewModel = hiltViewModel()) {
                 )
             }
         },
+        bottomBar = {
+            BottomNavigationBar(navController)
+        },
         topBar = {
             TopNavigationBar(onActionClick = viewModel::signOut)
         }
@@ -52,7 +59,18 @@ fun MainNavGraph(viewModel: HomeViewModel = hiltViewModel()) {
                     )
                 }
             }
-        }
 
+            composable<Destination.ProfileRoute> {
+                ProfileScreen(
+                    navigateToChangePassword = { navController.navigate(Destination.UpdatePasswordRoute) },
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
+            composable<Destination.UpdatePasswordRoute> {
+                UpdatePasswordScreen(modifier = Modifier.padding(innerPadding))
+            }
+
+        }
     }
 }
