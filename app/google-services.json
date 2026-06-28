@@ -12,7 +12,20 @@
           "package_name": "com.alezandrow.simplecleanarchitecture"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "257619721496-3uitg1bt3036068b5vgfo5vgrgprngvs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alezandrow.simplecleanarchitecture",
+            "certificate_hash": "86578a3a571bcff4d930c5b1ac641c525f35f43a"
+          }
+        },
+        {
+          "client_id": "257619721496-eqgqd2et7vqo5a2qldg8vfo5j392toik.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyA7kyootlUZfAgTnSW2RYAoFtjaKrW9Kzg"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "257619721496-eqgqd2et7vqo5a2qldg8vfo5j392toik.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
