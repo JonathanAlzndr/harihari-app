@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -42,17 +43,20 @@ fun RegisterScreen(
     val authUiState by viewModel.authUiState.collectAsStateWithLifecycle()
     val formState by viewModel.formState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     LaunchedEffect(authUiState) {
         when (authUiState) {
             AuthUiState.Success -> {
                 navigateToVerify(formState.email)
             }
+
             is AuthUiState.Error -> {
                 snackbarHostState.showSnackbar(
                     (authUiState as AuthUiState.Error).message
                 )
             }
+
             else -> Unit
         }
     }
@@ -110,7 +114,7 @@ fun RegisterScreen(
 
             Button(
                 onClick = {
-                    viewModel.signUp()
+                    viewModel.signUp(context)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = authUiState !is AuthUiState.Loading

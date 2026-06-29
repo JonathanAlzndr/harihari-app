@@ -1,10 +1,11 @@
 package com.alezandrow.simplecleanarchitecture.presentation.screen.register
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
 import com.alezandrow.simplecleanarchitecture.common.AppResult
-import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.RefreshCurrentUserUseCase
+import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
+import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SaveCredentialUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SendEmailVerificationUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignUpUseCase
 import com.alezandrow.simplecleanarchitecture.domain.validation.ValidationResult
@@ -26,7 +27,7 @@ class RegisterViewModel @Inject constructor(
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val sendEmailVerificationUseCase: SendEmailVerificationUseCase,
-    private val refreshCurrentUserUseCase: RefreshCurrentUserUseCase
+    private val saveCredentialUseCase: SaveCredentialUseCase,
 ) : ViewModel() {
 
     private var _authUiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
@@ -47,8 +48,7 @@ class RegisterViewModel @Inject constructor(
         _formState.update { it.copy(confirmPassword = newValue, passwordError = null) }
     }
 
-    fun signUp() {
-
+    fun signUp(context: Any) {
         val currentForm = _formState.value
 
         val emailResult = validateEmailUseCase(currentForm.email)
@@ -66,7 +66,7 @@ class RegisterViewModel @Inject constructor(
                 it.copy(
                     emailError = (emailResult as? ValidationResult.Error)?.message,
                     passwordError = (passwordResult as? ValidationResult.Error)?.message,
-                    confirmPasswordError = if(!hasPasswordMatch) "Password is not matching" else null
+                    confirmPasswordError = if (!hasPasswordMatch) "Password is not matching" else null
                 )
             }
             return
@@ -75,16 +75,30 @@ class RegisterViewModel @Inject constructor(
         _authUiState.update { AuthUiState.Loading }
 
         viewModelScope.launch {
-            when(val result = signUpUseCase(currentForm.email, currentForm.password)) {
+            when (val result = signUpUseCase(currentForm.email, currentForm.password)) {
                 is AppResult.Error -> {
                     _authUiState.value = AuthUiState.Error(mapAppErrorToMessage(result.error))
                 }
+
                 is AppResult.Success<AuthUser> -> {
                     sendEmailVerificationUseCase()
+                    saveCredential(currentForm.email, currentForm.password, context)
                     _authUiState.value = AuthUiState.Success
                 }
             }
         }
+    }
+
+    private suspend fun saveCredential(email: String, password: String, context: Any) {
+            when (val result = saveCredentialUseCase(email, password, context)) {
+                is AppResult.Error -> {
+                    Log.e("RegisterViewModel", "saveCredential: ${result.error}")
+                }
+
+                is AppResult.Success<*> -> {
+                    Log.d("RegisterViewModel", "saveCredential: ${result.data}")
+                }
+            }
     }
 
 }

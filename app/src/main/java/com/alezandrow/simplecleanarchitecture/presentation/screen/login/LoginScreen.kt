@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -40,8 +41,13 @@ fun LoginScreen(
 
     val authUiState by viewModel.authUiState.collectAsStateWithLifecycle()
     val formState by viewModel.loginFormState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.signInWithAutoFill(context)
+    }
 
     LaunchedEffect(authUiState) {
         if (authUiState is AuthUiState.Error) {
@@ -88,9 +94,8 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-
             Button(
-                onClick = { viewModel.signIn() },
+                onClick = { viewModel.signInManual() },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = authUiState !is AuthUiState.Loading
             ) {

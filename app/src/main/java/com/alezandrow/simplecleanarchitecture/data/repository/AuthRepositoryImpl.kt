@@ -1,5 +1,7 @@
 package com.alezandrow.simplecleanarchitecture.data.repository
 
+import android.content.Context
+import androidx.credentials.Credential
 import com.alezandrow.simplecleanarchitecture.common.AppError
 import com.alezandrow.simplecleanarchitecture.common.AppResult
 import com.alezandrow.simplecleanarchitecture.data.mapper.FirebaseAuthErrorMapper
@@ -63,11 +65,14 @@ class AuthRepositoryImpl @Inject constructor(
         authDataSource.requestPasswordResetEmail(email)
     }
 
-    override suspend fun updatePassword(currentPassword: String, newPassword: String): AppResult<String> {
+    override suspend fun updatePassword(
+        currentPassword: String,
+        newPassword: String
+    ): AppResult<String> {
         return try {
             authDataSource.updatePassword(currentPassword, newPassword)
             AppResult.Success("Password Updated Successfully")
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             AppResult.Error(FirebaseAuthErrorMapper.map(e))
         }
     }
@@ -76,7 +81,33 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             authDataSource.deleteUser()
             AppResult.Success("Account Deleted")
-        } catch(e: Exception) {
+        } catch (e: Exception) {
+            AppResult.Error(FirebaseAuthErrorMapper.map(e))
+        }
+    }
+
+    override suspend fun saveCredential(
+        email: String,
+        password: String,
+        context: Any
+    ): AppResult<Unit> {
+        val androidContext =
+            context as? Context ?: return AppResult.Error(AppError.Unknown("Context is not valid"))
+        return try {
+            authDataSource.saveCredential(email, password, androidContext)
+            AppResult.Success(Unit)
+        } catch (e: Exception) {
+            AppResult.Error(FirebaseAuthErrorMapper.map(e))
+        }
+    }
+
+    override suspend fun getSavedCredential(context: Any): AppResult<Credential> {
+        val androidContext =
+            context as? Context ?: return AppResult.Error(AppError.Unknown("Context is not valid"))
+        return try {
+            val credential = authDataSource.getSavedCredential(androidContext)
+            AppResult.Success(credential)
+        } catch (e: Exception) {
             AppResult.Error(FirebaseAuthErrorMapper.map(e))
         }
     }

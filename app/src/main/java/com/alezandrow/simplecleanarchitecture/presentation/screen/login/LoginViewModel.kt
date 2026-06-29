@@ -1,9 +1,11 @@
 package com.alezandrow.simplecleanarchitecture.presentation.screen.login
 
+import android.content.Context
+import androidx.credentials.PasswordCredential
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alezandrow.simplecleanarchitecture.common.AppResult
-import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
+import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.GetSavedCredentialUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.RefreshCurrentUserUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignInUseCase
 import com.alezandrow.simplecleanarchitecture.domain.validation.ValidationResult
@@ -24,7 +26,8 @@ class LoginViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
-    private val refreshCurrentUserUseCase: RefreshCurrentUserUseCase
+    private val refreshCurrentUserUseCase: RefreshCurrentUserUseCase,
+    private val getSavedCredentialUseCase: GetSavedCredentialUseCase
 ) : ViewModel() {
 
     private var _authUiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
@@ -41,18 +44,18 @@ class LoginViewModel @Inject constructor(
         _loginFormState.update { it.copy(password = newValue) }
     }
 
-    fun signIn() {
+    fun signInManual() {
         val currentForm = _loginFormState.value
         val emailResult = validateEmailUseCase(currentForm.email)
         val passwordResult = validatePasswordUseCase(currentForm.password)
 
         val hasError = listOf(emailResult, passwordResult).any { it is ValidationResult.Error }
 
-        if(hasError) {
+        if (hasError) {
             _loginFormState.update {
                 it.copy(
                     emailError = (emailResult as? ValidationResult.Error)?.message,
-                    passwordError =  (passwordResult as? ValidationResult.Error)?.message
+                    passwordError = (passwordResult as? ValidationResult.Error)?.message
                 )
             }
             return
@@ -61,17 +64,37 @@ class LoginViewModel @Inject constructor(
         _authUiState.update { AuthUiState.Loading }
 
         viewModelScope.launch {
-            when(val result = signInUseCase(currentForm.email, currentForm.password)) {
-                is AppResult.Error -> {
-                    _authUiState.value = AuthUiState.Error(mapAppErrorToMessage(result.error))
-                }
-                is AppResult.Success<AuthUser> -> {
-                    val refreshedUser =  refreshCurrentUserUseCase()
-                    if(refreshedUser?.isEmailVerified == true) {
-                        _authUiState.value = AuthUiState.Success
-                    } else {
-                        _authUiState.value = AuthUiState.Error("Email belum diverifikasi")
+            executeLogin(currentForm.email, currentForm.password)
+        }
+    }
+
+    fun signInWithAutoFill(context: Context) {
+        viewModelScope.launch {
+            when (val credentialResult = getSavedCredentialUseCase(context)) {
+                is AppResult.Error -> {}
+                is AppResult.Success -> {
+                    val credential = credentialResult.data
+                    if (credential is PasswordCredential) {
+                        _authUiState.update { AuthUiState.Loading }
+                        executeLogin(credential.id, credential.password)
                     }
+                }
+            }
+        }
+    }
+
+    private suspend fun executeLogin(email: String, password: String) {
+        when (val result = signInUseCase(email, password)) {
+            is AppResult.Error -> {
+                _authUiState.value = AuthUiState.Error(mapAppErrorToMessage(result.error))
+            }
+
+            is AppResult.Success -> {
+                val refreshedUser = refreshCurrentUserUseCase()
+                if(refreshedUser?.isEmailVerified == true) {
+                    _authUiState.value = AuthUiState.Success
+                } else {
+                    _authUiState.value = AuthUiState.Error("Email not verified")
                 }
             }
         }

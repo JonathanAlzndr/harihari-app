@@ -1,6 +1,7 @@
 package com.alezandrow.simplecleanarchitecture.di
 
 import android.content.Context
+import androidx.credentials.CredentialManager
 import androidx.room.Room
 import com.alezandrow.simplecleanarchitecture.BuildConfig
 import com.alezandrow.simplecleanarchitecture.data.source.local.TaskDao
@@ -42,13 +43,19 @@ object DataModule {
 
         if (BuildConfig.DEBUG) {
             auth.firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
-            val emulatorHost = "192.168.1.6"
+            val emulatorHost = "192.168.1.3"
             val emulatorPort = 9099
 
             auth.useEmulator(emulatorHost, emulatorPort)
         }
 
         return auth
+    }
+
+    @Provides
+    @Singleton
+    fun provideCredentialManager(@ApplicationContext context: Context): CredentialManager {
+        return CredentialManager.create(context)
     }
 
 }
