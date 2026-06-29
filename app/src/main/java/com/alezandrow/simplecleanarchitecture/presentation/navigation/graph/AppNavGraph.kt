@@ -2,7 +2,6 @@ package com.alezandrow.simplecleanarchitecture.presentation.navigation.graph
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.credentials.CredentialManager
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
 import com.alezandrow.simplecleanarchitecture.presentation.navigation.AppNavViewModel

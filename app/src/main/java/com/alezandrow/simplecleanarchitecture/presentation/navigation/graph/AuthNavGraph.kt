@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.credentials.CredentialManager
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,7 +15,7 @@ import com.alezandrow.simplecleanarchitecture.presentation.screen.reset_password
 import com.alezandrow.simplecleanarchitecture.presentation.screen.verify.VerifyEmailScreen
 
 @Composable
-fun AuthNavGraph(initialRoute: Destination = Destination.RegisterRoute) {
+fun AuthNavGraph(initialRoute: Destination = Destination.LoginRoute) {
 
     val navController = rememberNavController()
 
