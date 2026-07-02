@@ -4,12 +4,16 @@ import android.content.Context
 import androidx.credentials.CreatePasswordRequest
 import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetPasswordOption
 import com.alezandrow.simplecleanarchitecture.data.mapper.toAuthUser
 import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,6 +29,8 @@ class FirebaseAuthDataSource @Inject constructor(
     private val authListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
         _currentUser.value = firebaseAuth.currentUser?.toAuthUser()
     }
+
+    private val WEB_ID = "257619721496-eqgqd2et7vqo5a2qldg8vfo5j392toik.apps.googleusercontent.com"
 
     init {
         auth.addAuthStateListener(authListener)
@@ -104,6 +110,34 @@ class FirebaseAuthDataSource @Inject constructor(
         )
 
         return result.credential
+    }
+
+    suspend fun signInWithGoogle(context: Context): AuthUser {
+        val googleIdOption = GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(false)
+            .setServerClientId(WEB_ID)
+            .setAutoSelectEnabled(true)
+            .build()
+
+        val request = GetCredentialRequest(
+            credentialOptions = listOf(googleIdOption)
+        )
+
+        val result = credentialManager.getCredential(
+            context = context,
+            request = request
+        )
+
+        val credential = result.credential
+
+        if (credential is CustomCredential && credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+            val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+            val firebaseAuthCredential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
+
+            return auth.signInWithCredential(firebaseAuthCredential).await().toAuthUser()
+        } else {
+            throw Exception("Credential is not valid")
+        }
     }
 
 }

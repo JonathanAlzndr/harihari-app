@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alezandrow.simplecleanarchitecture.presentation.component.EmailInputText
+import com.alezandrow.simplecleanarchitecture.presentation.component.GoogleSignInButton
 import com.alezandrow.simplecleanarchitecture.presentation.component.LoadingLayout
 import com.alezandrow.simplecleanarchitecture.presentation.component.PasswordInputText
 import com.alezandrow.simplecleanarchitecture.presentation.state.AuthUiState
@@ -35,6 +36,7 @@ import com.alezandrow.simplecleanarchitecture.presentation.state.AuthUiState
 @Composable
 fun LoginScreen(
     navigateToRequestResetPassword: () -> Unit,
+    navigateToRegister: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
@@ -113,11 +115,22 @@ fun LoginScreen(
                     textAlign = TextAlign.Center
                 )
             }
+
+            TextButton(onClick = navigateToRegister) {
+                Text(
+                    text = "Register",
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            GoogleSignInButton { viewModel.signInWithGoogle(context) }
         }
 
         if (authUiState is AuthUiState.Loading) {
             LoadingLayout(modifier = Modifier.fillMaxSize())
         }
+
 
         SnackbarHost(
             hostState = snackbarHostState,

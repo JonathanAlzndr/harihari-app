@@ -27,4 +27,6 @@ interface AuthRepository {
     suspend fun saveCredential(email: String, password: String, context: Any): AppResult<Unit>
 
     suspend fun getSavedCredential(context: Any): AppResult<Credential>
+
+    suspend fun signInWithGoogle(context: Any): AppResult<AuthUser>
 }

@@ -1,6 +1,7 @@
 package com.alezandrow.simplecleanarchitecture.presentation.screen.login
 
 import android.content.Context
+import android.util.Log
 import androidx.credentials.PasswordCredential
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.alezandrow.simplecleanarchitecture.common.AppResult
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.GetSavedCredentialUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.RefreshCurrentUserUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignInUseCase
+import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignInWithGoogleUseCase
 import com.alezandrow.simplecleanarchitecture.domain.validation.ValidationResult
 import com.alezandrow.simplecleanarchitecture.domain.validation.validator.ValidateEmailUseCase
 import com.alezandrow.simplecleanarchitecture.domain.validation.validator.ValidatePasswordUseCase
@@ -27,7 +29,8 @@ class LoginViewModel @Inject constructor(
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val refreshCurrentUserUseCase: RefreshCurrentUserUseCase,
-    private val getSavedCredentialUseCase: GetSavedCredentialUseCase
+    private val getSavedCredentialUseCase: GetSavedCredentialUseCase,
+    private val signInWithGoogleUseCase: SignInWithGoogleUseCase
 ) : ViewModel() {
 
     private var _authUiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
@@ -83,6 +86,26 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun signInWithGoogle(context: Context) {
+        _authUiState.update { AuthUiState.Loading }
+
+        viewModelScope.launch {
+            when(val result = signInWithGoogleUseCase(context)) {
+                is AppResult.Error -> {
+                    _authUiState.value = AuthUiState.Error(mapAppErrorToMessage(result.error))
+                }
+                is AppResult.Success -> {
+                    val refreshedUser = refreshCurrentUserUseCase()
+                    if(refreshedUser?.isEmailVerified == true) {
+                        _authUiState.value = AuthUiState.Success
+                    } else {
+                        Log.d("LoginViewModel", "signInWithGoogle: $result")
+                    }
+                }
+            }
+        }
+    }
+
     private suspend fun executeLogin(email: String, password: String) {
         when (val result = signInUseCase(email, password)) {
             is AppResult.Error -> {
@@ -99,4 +122,5 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
+
 }

@@ -112,4 +112,15 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun signInWithGoogle(context: Any): AppResult<AuthUser> {
+        val androidContext = context as? Context ?: return AppResult.Error(AppError.Unknown("Context is not valid"))
+
+        return try {
+            val authUser = authDataSource.signInWithGoogle(androidContext)
+            AppResult.Success(authUser)
+        } catch (e: Exception) {
+            AppResult.Error(FirebaseAuthErrorMapper.map(e))
+        }
+    }
+
 }

@@ -26,6 +26,7 @@ fun AuthNavGraph(initialRoute: Destination = Destination.LoginRoute) {
             composable<Destination.LoginRoute> {
                 LoginScreen(
                     navigateToRequestResetPassword = { navController.navigate(Destination.ResetPasswordRoute) },
+                    navigateToRegister = { navController.navigate(Destination.RegisterRoute) },
                     modifier = Modifier.padding(innerPadding)
                 )
             }

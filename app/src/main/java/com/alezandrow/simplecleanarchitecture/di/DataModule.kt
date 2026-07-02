@@ -3,7 +3,6 @@ package com.alezandrow.simplecleanarchitecture.di
 import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.room.Room
-import com.alezandrow.simplecleanarchitecture.BuildConfig
 import com.alezandrow.simplecleanarchitecture.data.source.local.TaskDao
 import com.alezandrow.simplecleanarchitecture.data.source.local.TaskDatabase
 import com.google.firebase.Firebase
@@ -41,13 +40,13 @@ object DataModule {
     fun provideFirebaseAuth(): FirebaseAuth {
         val auth = Firebase.auth
 
-        if (BuildConfig.DEBUG) {
-            auth.firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
-            val emulatorHost = "192.168.1.3"
-            val emulatorPort = 9099
-
-            auth.useEmulator(emulatorHost, emulatorPort)
-        }
+//        if (BuildConfig.DEBUG) {
+//            auth.firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
+//            val emulatorHost = "192.168.1.3"
+//            val emulatorPort = 9099
+//
+//            auth.useEmulator(emulatorHost, emulatorPort)
+//        }
 
         return auth
     }
