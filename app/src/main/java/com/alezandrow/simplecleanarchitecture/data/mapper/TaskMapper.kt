@@ -1,10 +1,16 @@
 package com.alezandrow.simplecleanarchitecture.data.mapper
 
-import com.alezandrow.simplecleanarchitecture.data.source.local.TaskDbEntity
+import com.alezandrow.simplecleanarchitecture.data.source.network.dto.TaskDto
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.Task
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskStatus
+import com.google.firebase.firestore.DocumentSnapshot
 
-fun TaskDbEntity.toDomain(): Task {
+fun DocumentSnapshot.toTaskDto(): TaskDto? {
+    val dto = toObject(TaskDto::class.java) ?: return null
+    return dto.copy(id = id)
+}
+
+fun TaskDto.toTaskDomain(): Task {
     return Task(
         id = id,
         description = description,
@@ -16,8 +22,8 @@ fun TaskDbEntity.toDomain(): Task {
     )
 }
 
-fun Task.toDbEntity(): TaskDbEntity {
-    return TaskDbEntity(
+fun Task.toDto(): TaskDto {
+    return TaskDto(
         id = id,
         description = description,
         status = status.name

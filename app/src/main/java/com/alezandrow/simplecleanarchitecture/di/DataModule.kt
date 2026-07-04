@@ -3,11 +3,14 @@ package com.alezandrow.simplecleanarchitecture.di
 import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.room.Room
+import com.alezandrow.simplecleanarchitecture.BuildConfig
 import com.alezandrow.simplecleanarchitecture.data.source.local.TaskDao
 import com.alezandrow.simplecleanarchitecture.data.source.local.TaskDatabase
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,13 +43,13 @@ object DataModule {
     fun provideFirebaseAuth(): FirebaseAuth {
         val auth = Firebase.auth
 
-//        if (BuildConfig.DEBUG) {
-//            auth.firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
-//            val emulatorHost = "192.168.1.3"
-//            val emulatorPort = 9099
-//
-//            auth.useEmulator(emulatorHost, emulatorPort)
-//        }
+        if (BuildConfig.DEBUG) {
+            auth.firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
+            val emulatorHost = "192.168.1.8"
+            val emulatorPort = 9099
+
+            auth.useEmulator(emulatorHost, emulatorPort)
+        }
 
         return auth
     }
@@ -55,6 +58,16 @@ object DataModule {
     @Singleton
     fun provideCredentialManager(@ApplicationContext context: Context): CredentialManager {
         return CredentialManager.create(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseFirestore(): FirebaseFirestore {
+        val firestore = Firebase.firestore
+        if (BuildConfig.DEBUG) {
+            firestore.useEmulator("192.168.1.8", 8080)
+        }
+        return firestore
     }
 
 }

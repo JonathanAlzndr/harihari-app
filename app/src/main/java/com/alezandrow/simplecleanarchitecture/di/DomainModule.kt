@@ -1,7 +1,7 @@
 package com.alezandrow.simplecleanarchitecture.di
 
 import com.alezandrow.simplecleanarchitecture.data.repository.AuthRepositoryImpl
-import com.alezandrow.simplecleanarchitecture.data.repository.TaskRepositoryImpl
+import com.alezandrow.simplecleanarchitecture.data.repository.TaskRepositoryFirestoreImpl
 import com.alezandrow.simplecleanarchitecture.domain.repository.AuthRepository
 import com.alezandrow.simplecleanarchitecture.domain.repository.TaskRepository
 import dagger.Binds
@@ -17,7 +17,7 @@ abstract class DomainModule {
 
     @Singleton
     @Binds
-    abstract fun bindTaskRepository(taskRepositoryImpl: TaskRepositoryImpl): TaskRepository
+    abstract fun bindTaskRepository(taskRepositoryImpl: TaskRepositoryFirestoreImpl): TaskRepository
 
     @Singleton
     @Binds
