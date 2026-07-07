@@ -21,8 +21,9 @@ class TaskRepositoryImpl @Inject constructor(private val taskDao: TaskDao) : Tas
 
     override fun getAllTasks(): Flow<List<Task>> {
         return flow {
-            emit(listOf(Task(status  = TaskStatus.NEW, description = "Test")))
+            emit(listOf(Task(status = TaskStatus.NEW, description = "Test")))
         }
+
     }
 
     override suspend fun deleteTask(task: Task) {

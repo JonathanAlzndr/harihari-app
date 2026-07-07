@@ -6,13 +6,15 @@ import com.alezandrow.simplecleanarchitecture.common.AppError
 import com.alezandrow.simplecleanarchitecture.common.AppResult
 import com.alezandrow.simplecleanarchitecture.data.mapper.FirebaseAuthErrorMapper
 import com.alezandrow.simplecleanarchitecture.data.source.network.FirebaseAuthDataSource
+import com.alezandrow.simplecleanarchitecture.data.source.network.SessionDataSource
 import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
 import com.alezandrow.simplecleanarchitecture.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val authDataSource: FirebaseAuthDataSource
+    private val authDataSource: FirebaseAuthDataSource,
+    private val sessionDataSource: SessionDataSource
 ) : AuthRepository {
 
     override suspend fun signIn(
@@ -50,7 +52,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override fun observeCurrentUser(): Flow<AuthUser?> {
-        return authDataSource.observeCurrentUser()
+        return sessionDataSource.observeCurrentUser()
     }
 
     override suspend fun sendEmailVerification() {
@@ -58,7 +60,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun refreshCurrentUser(): AuthUser? {
-        return authDataSource.refreshCurrentUser()
+        return sessionDataSource.refreshCurrentUser()
     }
 
     override suspend fun requestPasswordResetEmail(email: String) {

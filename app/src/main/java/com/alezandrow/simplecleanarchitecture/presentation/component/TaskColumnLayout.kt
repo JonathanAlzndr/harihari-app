@@ -29,7 +29,7 @@ fun TaskColumnLayout(
 
             val dismissState = rememberSwipeToDismissBoxState(
                 confirmValueChange = { value ->
-                    if(value == SwipeToDismissBoxValue.EndToStart) {
+                    if (value == SwipeToDismissBoxValue.EndToStart) {
                         onDeleteTask(task)
                         true
                     } else {

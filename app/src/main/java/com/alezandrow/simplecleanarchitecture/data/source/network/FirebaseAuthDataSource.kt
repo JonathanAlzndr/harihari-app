@@ -14,9 +14,6 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -25,16 +22,7 @@ class FirebaseAuthDataSource @Inject constructor(
     private val credentialManager: CredentialManager
 ) {
 
-    private val _currentUser = MutableStateFlow(auth.currentUser?.toAuthUser())
-    private val authListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
-        _currentUser.value = firebaseAuth.currentUser?.toAuthUser()
-    }
-
     private val WEB_ID = "257619721496-eqgqd2et7vqo5a2qldg8vfo5j392toik.apps.googleusercontent.com"
-
-    init {
-        auth.addAuthStateListener(authListener)
-    }
 
     suspend fun signIn(
         email: String,
@@ -57,20 +45,9 @@ class FirebaseAuthDataSource @Inject constructor(
         auth.signOut()
     }
 
-    fun observeCurrentUser(): Flow<AuthUser?> =
-        _currentUser.asStateFlow()
-
     suspend fun sendEmailVerification() {
         val user = auth.currentUser
         user?.sendEmailVerification()?.await()
-    }
-
-    suspend fun refreshCurrentUser(): AuthUser? {
-
-        auth.currentUser?.reload()?.await()
-        val user = auth.currentUser?.toAuthUser()
-        _currentUser.value = user
-        return user
     }
 
     suspend fun requestPasswordResetEmail(email: String) {
