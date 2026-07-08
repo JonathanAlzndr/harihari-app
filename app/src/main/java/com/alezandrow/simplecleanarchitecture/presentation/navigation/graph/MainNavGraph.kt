@@ -41,7 +41,7 @@ fun MainNavGraph(viewModel: HomeViewModel = hiltViewModel()) {
 
     Scaffold(
         floatingActionButton = {
-            if(isAtHome) {
+            if (isAtHome) {
                 FloatingActionButton(onClick = { showDialog = true }) {
                     Icon(
                         imageVector = Icons.Default.Add,

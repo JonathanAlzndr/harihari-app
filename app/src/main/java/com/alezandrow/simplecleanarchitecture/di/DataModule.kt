@@ -45,7 +45,7 @@ object DataModule {
 
         if (BuildConfig.DEBUG) {
             auth.firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
-            val emulatorHost = "192.168.18.115"
+            val emulatorHost = "192.168.100.117"
             val emulatorPort = 9099
 
             auth.useEmulator(emulatorHost, emulatorPort)
@@ -65,7 +65,7 @@ object DataModule {
     fun provideFirebaseFirestore(): FirebaseFirestore {
         val firestore = Firebase.firestore
         if (BuildConfig.DEBUG) {
-            firestore.useEmulator("192.168.18.115", 8080)
+            firestore.useEmulator("192.168.100.117", 8080)
         }
         return firestore
     }
