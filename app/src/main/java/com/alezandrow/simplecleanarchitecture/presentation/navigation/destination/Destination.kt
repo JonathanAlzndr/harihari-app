@@ -21,4 +21,6 @@ sealed interface Destination {
     data object ProfileRoute : Destination
     @Serializable
     data object UpdatePasswordRoute : Destination
+    @Serializable
+    data object AddTaskRoute : Destination
 }

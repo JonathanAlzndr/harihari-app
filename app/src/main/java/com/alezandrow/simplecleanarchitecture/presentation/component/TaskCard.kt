@@ -34,7 +34,7 @@ fun TaskCard(
     onClickAction: (Task) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isDone = TaskStatus.DONE == task.status
+    val isDone = TaskStatus.DONE == task.taskStatus
     Card(
         modifier = modifier
             .fillMaxWidth()

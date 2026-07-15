@@ -1,6 +1,7 @@
 package com.alezandrow.simplecleanarchitecture.domain.entities.task
 
-enum class TaskStatus {
-    NEW,
-    DONE
+enum class TaskPriority {
+    LOW,
+    MEDIUM,
+    HIGH
 }

@@ -14,13 +14,16 @@ import com.alezandrow.simplecleanarchitecture.presentation.state.TaskUiState
 fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
 
     val taskUiState by viewModel.taskUiState.collectAsStateWithLifecycle()
+    val currentPriority by viewModel.selectedPriority.collectAsStateWithLifecycle()
 
     when (val state = taskUiState) {
         is TaskUiState.Error -> ErrorLayout(message = state.message, modifier = modifier.fillMaxSize())
         TaskUiState.Loading -> LoadingLayout(modifier = modifier.fillMaxSize())
         is TaskUiState.Success -> TaskColumnLayout(
             tasks = state.tasks,
-            onClickAction = viewModel::toggleTask,
+            selectedPriority = currentPriority,
+            onPrioritySelectedAction = viewModel::setFilterPriority,
+            onClickAction = viewModel::toggleTaskStatus,
             onDeleteTask = viewModel::deleteTask,
             modifier = modifier.fillMaxSize(),
         )
