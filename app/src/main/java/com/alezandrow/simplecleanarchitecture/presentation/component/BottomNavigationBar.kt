@@ -28,6 +28,11 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modif
             route = Destination.HomeRoute
         ),
         NavItem(
+            title = "Camera",
+            icon = camera,
+            route = Destination.CameraRoute
+        ),
+        NavItem(
             title = "Profile",
             icon = Icons.Default.Person,
             route = Destination.ProfileRoute

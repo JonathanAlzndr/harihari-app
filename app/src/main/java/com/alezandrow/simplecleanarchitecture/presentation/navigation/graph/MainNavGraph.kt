@@ -24,6 +24,7 @@ import com.alezandrow.simplecleanarchitecture.presentation.component.AddTaskDial
 import com.alezandrow.simplecleanarchitecture.presentation.component.BottomNavigationBar
 import com.alezandrow.simplecleanarchitecture.presentation.component.TopNavigationBar
 import com.alezandrow.simplecleanarchitecture.presentation.navigation.destination.Destination
+import com.alezandrow.simplecleanarchitecture.presentation.screen.camera.CameraScreen
 import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeScreen
 import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeViewModel
 import com.alezandrow.simplecleanarchitecture.presentation.screen.profile.ProfileScreen
@@ -79,6 +80,10 @@ fun MainNavGraph(viewModel: HomeViewModel = hiltViewModel()) {
 
             composable<Destination.UpdatePasswordRoute> {
                 UpdatePasswordScreen(modifier = Modifier.padding(innerPadding))
+            }
+
+            composable<Destination.CameraRoute> {
+                CameraScreen(modifier = Modifier.padding(innerPadding))
             }
 
         }
