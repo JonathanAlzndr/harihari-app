@@ -10,10 +10,8 @@ interface TaskRepository {
 
     suspend fun changeTaskStatus(task: Task)
 
-    fun getAllTasks(): Flow<List<Task>>
-
     suspend fun deleteTask(task: Task)
 
-    fun getTasksByPriority(priority: TaskPriority): Flow<List<Task>>
+    fun getTaskByTitleAndPriority(title: String, priority: TaskPriority?): Flow<List<Task>>
 
 }

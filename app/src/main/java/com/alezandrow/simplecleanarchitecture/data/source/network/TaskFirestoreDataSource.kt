@@ -3,10 +3,9 @@ package com.alezandrow.simplecleanarchitecture.data.source.network
 import com.alezandrow.simplecleanarchitecture.data.mapper.toTaskDto
 import com.alezandrow.simplecleanarchitecture.data.source.network.dto.TaskDto
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.snapshots
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -15,16 +14,29 @@ class TaskFirestoreDataSource @Inject constructor(
     private val db: FirebaseFirestore,
 ) {
 
-    fun getTaskByPriority(uid: String, priority: String): Flow<List<TaskDto>> {
-        return db.collection("users")
+    fun getTaskByTitleAndPriority(uid: String, title: String, priority:String?): Flow<List<TaskDto>> {
+        var dbRef: Query = db.collection("users")
             .document(uid)
             .collection("tasks")
-            .whereEqualTo("priority", priority)
-            .orderBy("createdAt")
-            .snapshots()
-            .map { snapshots ->
-                snapshots.documents.mapNotNull { it.toTaskDto() }
+
+        if(priority != null) {
+            dbRef = dbRef.whereEqualTo("priority", priority)
+        }
+
+        dbRef = dbRef.orderBy("createdAt")
+
+        return dbRef.snapshots().map { snapshots ->
+
+            val allTasks = snapshots.documents.mapNotNull { it.toTaskDto() }
+            if(title.isNotBlank()) {
+
+                allTasks.filter { task ->
+                    task.title.contains(title, ignoreCase = true)
+                }
+            } else {
+                allTasks
             }
+        }
     }
 
     suspend fun addNewTask(uid: String, task: TaskDto) {
@@ -53,26 +65,4 @@ class TaskFirestoreDataSource @Inject constructor(
             .await()
     }
 
-    fun getAllTask(uid: String): Flow<List<TaskDto>> = callbackFlow {
-
-        val ref = db.collection("users")
-            .document(uid)
-            .collection("tasks")
-
-        val listener = ref.addSnapshotListener { snapshots, exception ->
-            if(exception != null) {
-                close(exception)
-                return@addSnapshotListener
-            }
-
-            if(snapshots != null) {
-                val tasks = snapshots.documents.mapNotNull { it.toTaskDto() }
-                trySend(tasks)
-            }
-        }
-    
-        awaitClose {
-            listener.remove()
-        }
-    }
 }
