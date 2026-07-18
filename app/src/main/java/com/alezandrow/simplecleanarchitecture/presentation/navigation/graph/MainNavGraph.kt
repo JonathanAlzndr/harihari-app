@@ -1,8 +1,6 @@
 package com.alezandrow.simplecleanarchitecture.presentation.navigation.graph
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -18,6 +16,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.alezandrow.simplecleanarchitecture.presentation.component.BottomNavigationBar
 import com.alezandrow.simplecleanarchitecture.presentation.component.TopNavigationBar
+import com.alezandrow.simplecleanarchitecture.presentation.icon.add_icon
 import com.alezandrow.simplecleanarchitecture.presentation.navigation.destination.Destination
 import com.alezandrow.simplecleanarchitecture.presentation.screen.add_task.AddTaskScreen
 import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeScreen
@@ -42,7 +41,7 @@ fun MainNavGraph(viewModel: HomeViewModel = hiltViewModel()) {
             if (isAtHome) {
                 FloatingActionButton(onClick = { navController.navigate(Destination.AddTaskRoute) }) {
                     Icon(
-                        imageVector = Icons.Default.Add,
+                        imageVector = add_icon,
                         contentDescription = "Add Task"
                     )
                 }

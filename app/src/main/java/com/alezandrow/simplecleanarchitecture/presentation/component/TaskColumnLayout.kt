@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SwipeToDismissBox
@@ -21,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.Task
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskPriority
+import com.alezandrow.simplecleanarchitecture.presentation.icon.check_circle_filled
 
 @Composable
 fun TaskColumnLayout(
@@ -51,7 +50,7 @@ fun TaskColumnLayout(
                     leadingIcon = {
                         if (isSelected) {
                             Icon(
-                                imageVector = Icons.Default.Check,
+                                imageVector = check_circle_filled,
                                 contentDescription = null,
                             )
                         }

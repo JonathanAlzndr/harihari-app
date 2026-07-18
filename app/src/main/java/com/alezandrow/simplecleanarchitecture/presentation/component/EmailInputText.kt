@@ -1,9 +1,6 @@
 package com.alezandrow.simplecleanarchitecture.presentation.component
 
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -12,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import com.alezandrow.simplecleanarchitecture.presentation.icon.close_icon
+import com.alezandrow.simplecleanarchitecture.presentation.icon.mail_icon
 
 @Composable
 fun EmailInputText(
@@ -28,12 +27,12 @@ fun EmailInputText(
         label = { Text("Email Address") },
         placeholder = { Text("example@email.com") },
         leadingIcon = {
-            Icon(imageVector = Icons.Default.Email, contentDescription = "Email Icon")
+            Icon(imageVector = mail_icon, contentDescription = "Email Icon")
         },
         trailingIcon = {
             if (value.isNotEmpty()) {
                 IconButton(onClick = { onValueChange("") }) {
-                    Icon(imageVector = Icons.Default.Clear, contentDescription = "Clear text")
+                    Icon(imageVector = close_icon, contentDescription = "Clear text")
                 }
             }
         },

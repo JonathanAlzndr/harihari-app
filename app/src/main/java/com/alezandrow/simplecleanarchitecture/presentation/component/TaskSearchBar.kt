@@ -1,7 +1,5 @@
 package com.alezandrow.simplecleanarchitecture.presentation.component
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SearchBar
@@ -9,6 +7,7 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.test.search_icon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,7 +24,7 @@ fun TaskSearchBar(query: String, onQueryChange: (String) -> Unit, modifier: Modi
                 placeholder = { Text("Search your task") },
                 trailingIcon = {
                     Icon(
-                        imageVector = Icons.Default.Search,
+                        imageVector = search_icon,
                         contentDescription = null
                     )
                 }

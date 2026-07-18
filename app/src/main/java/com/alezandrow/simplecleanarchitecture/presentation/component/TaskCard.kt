@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -27,6 +24,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.Task
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskStatus
+import com.alezandrow.simplecleanarchitecture.presentation.icon.check_circle_filled
+import com.alezandrow.simplecleanarchitecture.presentation.icon.check_circle_outlined
 
 @Composable
 fun TaskCard(
@@ -88,8 +87,8 @@ fun TaskCard(
             Spacer(modifier = Modifier.width(8.dp))
 
             Icon(
-                imageVector = if (isDone) Icons.Filled.CheckCircle
-                else Icons.Outlined.CheckCircle,
+                imageVector = if (isDone) check_circle_filled
+                else check_circle_outlined,
                 contentDescription = if (isDone) "Checked" else "Unchecked",
                 tint = if (isDone) MaterialTheme.colorScheme.primary
                 else MaterialTheme.colorScheme.onSurfaceVariant,

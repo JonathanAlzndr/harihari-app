@@ -1,6 +1,8 @@
 package com.alezandrow.simplecleanarchitecture.presentation.screen.add_task
 
-import androidx.compose.foundation.Image
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,9 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,15 +39,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import coil3.compose.AsyncImage
 import com.alezandrow.simplecleanarchitecture.R
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.Task
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskPriority
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskStatus
+import com.alezandrow.simplecleanarchitecture.presentation.icon.check
+import com.alezandrow.simplecleanarchitecture.presentation.icon.date_range
 import com.alezandrow.simplecleanarchitecture.presentation.util.toFormattedDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTaskScreen(onConfirmation: (Task) -> Unit, modifier: Modifier = Modifier) {
+fun AddTaskScreen(
+    onConfirmation: (Task) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: AddTaskViewModel = hiltViewModel()
+) {
 
     var description by remember { mutableStateOf("") }
     var title by remember { mutableStateOf("") }
@@ -58,6 +66,13 @@ fun AddTaskScreen(onConfirmation: (Task) -> Unit, modifier: Modifier = Modifier)
     val formattedDate = remember(dueDate) {
         dueDate.toFormattedDate()
     }
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        if (uri != null) viewModel.setImageUri(uri)
+    }
+
+    val imageUriState by viewModel.imageUri.collectAsState()
     val datePickerState = rememberDatePickerState()
 
     Card(
@@ -76,14 +91,19 @@ fun AddTaskScreen(onConfirmation: (Task) -> Unit, modifier: Modifier = Modifier)
                 .verticalScroll(rememberScrollState())
         ) {
 
-            Image(
-                painter = painterResource(R.drawable.task_img_1),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp),
-                contentScale = ContentScale.Crop
+            AsyncImage(
+                model = imageUriState,
+                placeholder = painterResource(R.drawable.task_img_1),
+                contentDescription = "task image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxWidth()
             )
+
+            Button(onClick = {
+                galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            }) {
+                Text("Pick image from gallery")
+            }
 
             Column(
                 modifier = Modifier
@@ -134,7 +154,7 @@ fun AddTaskScreen(onConfirmation: (Task) -> Unit, modifier: Modifier = Modifier)
                                 leadingIcon = {
                                     if (isSelected) {
                                         Icon(
-                                            imageVector = Icons.Default.Check,
+                                            imageVector = check,
                                             contentDescription = null,
                                         )
                                     }
@@ -158,7 +178,7 @@ fun AddTaskScreen(onConfirmation: (Task) -> Unit, modifier: Modifier = Modifier)
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            imageVector = Icons.Default.DateRange,
+                            imageVector = date_range,
                             contentDescription = "Select Due Date",
                             tint = MaterialTheme.colorScheme.primary
                         )
