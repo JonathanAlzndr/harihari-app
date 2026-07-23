@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alezandrow.simplecleanarchitecture.common.AppResult
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.DeleteAccountUseCase
+import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.ObserveCurrentUserUseCase
 import com.alezandrow.simplecleanarchitecture.presentation.state.AuthUiState
 import com.alezandrow.simplecleanarchitecture.presentation.util.mapAppErrorToMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val deleteAccountUseCase: DeleteAccountUseCase
+    private val deleteAccountUseCase: DeleteAccountUseCase,
+    private val observeCurrentUserUseCase: ObserveCurrentUserUseCase
 ) : ViewModel() {
 
     private val _authUiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)

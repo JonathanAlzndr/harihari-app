@@ -1,4 +1,19 @@
 <resources>
     <string name="app_name">SimpleCleanArchitecture</string>
     <string name="web_client_id">257619721496-eqgqd2et7vqo5a2qldg8vfo5j392toik.apps.googleusercontent.com</string>
+    <string name="sign_in_headline">Welcome Back Again</string>
+    <string name="sign_in_supporting">Sign in to manage your tasks and stay organized</string>
+    <string name="email_placeholder">Enter your email</string>
+    <string name="password_placeholder">Enter your password</string>
+    <string name="password_label">Password</string>
+    <string name="email_label">Email</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="or">OR</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="no_account">Don\'t have an account? Sign Up</string>
+    <string name="login">Sign In</string>
+    <string name="sign_up_supporting">Create an account and start organizing your tasks</string>
+    <string name="sign_up_headline">Create Account</string>
+    <string name="have_account">Already have an account? Sign In</string>
 </resources>

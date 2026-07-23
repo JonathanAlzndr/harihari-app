@@ -4,7 +4,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -35,6 +38,7 @@ fun MainNavGraph(viewModel: HomeViewModel = hiltViewModel()) {
     val isAtAddTask = currentDestination?.hierarchy?.any {
         it.hasRoute(Destination.AddTaskRoute::class)
     } == true
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         floatingActionButton = {
@@ -47,8 +51,11 @@ fun MainNavGraph(viewModel: HomeViewModel = hiltViewModel()) {
                 }
             }
         },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         bottomBar = {
-            if(!isAtAddTask) {
+            if (!isAtAddTask) {
                 BottomNavigationBar(navController)
             }
         },
@@ -59,7 +66,11 @@ fun MainNavGraph(viewModel: HomeViewModel = hiltViewModel()) {
 
         NavHost(navController = navController, startDestination = Destination.HomeRoute) {
             composable<Destination.HomeRoute> {
-                HomeScreen(Modifier.padding(innerPadding), viewModel)
+                HomeScreen(
+                    snackbarHostState = snackbarHostState,
+                    modifier = Modifier.padding(innerPadding),
+                    viewModel = viewModel
+                )
             }
 
             composable<Destination.ProfileRoute> {
@@ -75,7 +86,8 @@ fun MainNavGraph(viewModel: HomeViewModel = hiltViewModel()) {
 
             composable<Destination.AddTaskRoute> {
                 AddTaskScreen(
-                    onConfirmation = { task -> viewModel.addNewTask(task) },
+                    navigateBack = { navController.popBackStack() },
+                    snackbarHostState = snackbarHostState,
                     modifier = Modifier.padding(innerPadding)
                 )
             }

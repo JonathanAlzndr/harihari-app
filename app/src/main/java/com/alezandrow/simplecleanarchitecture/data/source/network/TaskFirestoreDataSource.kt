@@ -26,10 +26,8 @@ class TaskFirestoreDataSource @Inject constructor(
         dbRef = dbRef.orderBy("createdAt")
 
         return dbRef.snapshots().map { snapshots ->
-
             val allTasks = snapshots.documents.mapNotNull { it.toTaskDto() }
             if(title.isNotBlank()) {
-
                 allTasks.filter { task ->
                     task.title.contains(title, ignoreCase = true)
                 }
@@ -40,7 +38,6 @@ class TaskFirestoreDataSource @Inject constructor(
     }
 
     suspend fun addNewTask(uid: String, task: TaskDto) {
-
         db.collection("users")
             .document(uid)
             .collection("tasks")

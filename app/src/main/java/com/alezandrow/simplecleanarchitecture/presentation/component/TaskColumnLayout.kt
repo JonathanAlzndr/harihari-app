@@ -4,22 +4,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.Task
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskPriority
-import com.alezandrow.simplecleanarchitecture.presentation.icon.check_circle_filled
+import com.alezandrow.simplecleanarchitecture.presentation.theme.Spacing
 
 @Composable
 fun TaskColumnLayout(
@@ -28,36 +26,18 @@ fun TaskColumnLayout(
     onPrioritySelectedAction: (TaskPriority) -> Unit,
     onClickAction: (Task) -> Unit,
     onDeleteTask: (Task) -> Unit,
-    modifier: Modifier = Modifier
 ) {
 
-    Column(modifier = modifier) {
+    Column {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = 16.dp,
-                    vertical = 8.dp
-                ),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.sm)
         ) {
-            TaskPriority.entries.forEach { priority ->
-                val isSelected = selectedPriority == priority
-                FilterChip(
-                    selected = isSelected,
-                    onClick = { onPrioritySelectedAction(priority) },
-                    label = { Text(priority.name) },
-                    leadingIcon = {
-                        if (isSelected) {
-                            Icon(
-                                imageVector = check_circle_filled,
-                                contentDescription = null,
-                            )
-                        }
-                    }
-                )
-            }
+            TaskFilterChip(selectedPriority, { onPrioritySelectedAction(it) })
         }
+
+        Spacer(modifier = Modifier.height(Spacing.sm))
 
         LazyColumn(
             modifier = Modifier

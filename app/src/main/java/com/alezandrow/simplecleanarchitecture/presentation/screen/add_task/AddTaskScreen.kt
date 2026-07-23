@@ -1,12 +1,11 @@
 package com.alezandrow.simplecleanarchitecture.presentation.screen.add_task
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,37 +24,43 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import coil3.compose.AsyncImage
-import com.alezandrow.simplecleanarchitecture.R
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.Task
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskPriority
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskStatus
+import com.alezandrow.simplecleanarchitecture.presentation.component.LoadingLayout
 import com.alezandrow.simplecleanarchitecture.presentation.icon.check
 import com.alezandrow.simplecleanarchitecture.presentation.icon.date_range
+import com.alezandrow.simplecleanarchitecture.presentation.state.OperationUiState
+import com.alezandrow.simplecleanarchitecture.presentation.state.TaskEvent
 import com.alezandrow.simplecleanarchitecture.presentation.util.toFormattedDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTaskScreen(
-    onConfirmation: (Task) -> Unit,
+    snackbarHostState: SnackbarHostState,
+    navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddTaskViewModel = hiltViewModel()
 ) {
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var description by remember { mutableStateOf("") }
     var title by remember { mutableStateOf("") }
@@ -66,48 +71,44 @@ fun AddTaskScreen(
     val formattedDate = remember(dueDate) {
         dueDate.toFormattedDate()
     }
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        if (uri != null) viewModel.setImageUri(uri)
-    }
-
-    val imageUriState by viewModel.imageUri.collectAsState()
     val datePickerState = rememberDatePickerState()
 
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+
+            if (event is TaskEvent.ShowSnackbar) {
+                val result = snackbarHostState.showSnackbar(
+                    event.message,
+                    "Back to home",
+                    duration = SnackbarDuration.Indefinite
+                )
+
+                when (result) {
+                    SnackbarResult.Dismissed -> Unit
+                    SnackbarResult.ActionPerformed -> navigateBack()
+                }
+            }
+        }
+    }
+
+
+    Box(modifier = modifier.fillMaxSize()) {
+
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
-
-            AsyncImage(
-                model = imageUriState,
-                placeholder = painterResource(R.drawable.task_img_1),
-                contentDescription = "task image",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Button(onClick = {
-                galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            }) {
-                Text("Pick image from gallery")
-            }
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
                     .padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
@@ -115,24 +116,6 @@ fun AddTaskScreen(
                     text = "Create New Task",
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onSurface
-                )
-
-                OutlinedTextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("Task Title") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                OutlinedTextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text("Task Description") },
-                    placeholder = { Text("What needs to be done?") },
-                    minLines = 3,
-                    maxLines = 5,
-                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -164,6 +147,26 @@ fun AddTaskScreen(
                     }
                 }
 
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Task Title") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Task Description") },
+                    placeholder = { Text("What needs to be done?") },
+                    minLines = 3,
+                    maxLines = 5,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 OutlinedCard(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { showDatePicker = true },
@@ -182,7 +185,9 @@ fun AddTaskScreen(
                             contentDescription = "Select Due Date",
                             tint = MaterialTheme.colorScheme.primary
                         )
+
                         Spacer(modifier = Modifier.width(16.dp))
+
                         Column {
                             Text(
                                 text = "Due Date",
@@ -199,8 +204,6 @@ fun AddTaskScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
                 Button(
                     onClick = {
                         val task = Task(
@@ -210,7 +213,7 @@ fun AddTaskScreen(
                             dueDate = dueDate,
                             priority = selectedPriority
                         )
-                        onConfirmation(task)
+                        viewModel.addNewTask(task)
                     },
                     enabled = description.isNotBlank() && title.isNotBlank(),
                     modifier = Modifier
@@ -221,26 +224,33 @@ fun AddTaskScreen(
                 }
             }
         }
-    }
 
-    if (showDatePicker) {
-        DatePickerDialog(
-            onDismissRequest = { showDatePicker = false },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        dueDate = datePickerState.selectedDateMillis
-                        showDatePicker = false
-                    }
-                ) { Text("OK") }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { showDatePicker = false }
-                ) { Text("Cancel") }
+        if (showDatePicker) {
+            DatePickerDialog(
+                onDismissRequest = { showDatePicker = false },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            dueDate = datePickerState.selectedDateMillis
+                            showDatePicker = false
+                        }
+                    ) { Text("OK") }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { showDatePicker = false }
+                    ) { Text("Cancel") }
+                }
+            ) {
+                DatePicker(state = datePickerState)
             }
-        ) {
-            DatePicker(state = datePickerState)
         }
     }
+
+    if (uiState == OperationUiState.Loading) {
+        LoadingLayout(modifier = Modifier.fillMaxSize())
+    }
 }
+
+
+
