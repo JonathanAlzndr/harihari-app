@@ -79,7 +79,10 @@ fun MainNavGraph(snackbarHostState: SnackbarHostState, viewModel: HomeViewModel 
             }
 
             composable<Destination.UpdatePasswordRoute> {
-                UpdatePasswordScreen(modifier = Modifier.padding(innerPadding))
+                UpdatePasswordScreen(
+                    snackbarHostState = snackbarHostState,
+                    Modifier.padding(innerPadding)
+                )
             }
 
             composable<Destination.AddTaskRoute> {
