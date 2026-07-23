@@ -7,7 +7,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -28,7 +27,7 @@ import com.alezandrow.simplecleanarchitecture.presentation.screen.profile.Profil
 import com.alezandrow.simplecleanarchitecture.presentation.screen.update_password.UpdatePasswordScreen
 
 @Composable
-fun MainNavGraph(viewModel: HomeViewModel = hiltViewModel()) {
+fun MainNavGraph(snackbarHostState: SnackbarHostState, viewModel: HomeViewModel = hiltViewModel()) {
 
     val navController = rememberNavController()
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
@@ -38,7 +37,6 @@ fun MainNavGraph(viewModel: HomeViewModel = hiltViewModel()) {
     val isAtAddTask = currentDestination?.hierarchy?.any {
         it.hasRoute(Destination.AddTaskRoute::class)
     } == true
-    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         floatingActionButton = {

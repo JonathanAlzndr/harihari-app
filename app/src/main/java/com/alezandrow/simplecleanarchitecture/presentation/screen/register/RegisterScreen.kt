@@ -80,7 +80,7 @@ fun RegisterScreen(
 
             Image(
                 painter = painterResource(R.drawable.app_logo),
-                modifier = Modifier.size(120.dp),
+                modifier = Modifier.size(160.dp),
                 contentScale = ContentScale.Fit,
                 contentDescription = null
             )
@@ -96,7 +96,7 @@ fun RegisterScreen(
 
             Text(
                 text = stringResource(R.string.sign_up_supporting),
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.bodyMedium
             )
 
             Spacer(modifier = Modifier.height(Spacing.lg))

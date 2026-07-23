@@ -2,6 +2,8 @@ package com.alezandrow.simplecleanarchitecture.presentation.navigation.graph
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -15,16 +17,24 @@ import com.alezandrow.simplecleanarchitecture.presentation.screen.reset_password
 import com.alezandrow.simplecleanarchitecture.presentation.screen.verify.VerifyEmailScreen
 
 @Composable
-fun AuthNavGraph(initialRoute: Destination = Destination.LoginRoute) {
+fun AuthNavGraph(
+    snackbarHostState: SnackbarHostState,
+    initialRoute: Destination = Destination.LoginRoute
+) {
 
     val navController = rememberNavController()
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
+        }
+    ) { innerPadding ->
 
         NavHost(navController = navController, startDestination = initialRoute) {
 
             composable<Destination.LoginRoute> {
                 LoginScreen(
+                    snackbarHostState = snackbarHostState,
                     navigateToRequestResetPassword = { navController.navigate(Destination.ResetPasswordRoute) },
                     navigateToRegister = { navController.navigate(Destination.RegisterRoute) },
                     modifier = Modifier.padding(innerPadding)
@@ -47,7 +57,10 @@ fun AuthNavGraph(initialRoute: Destination = Destination.LoginRoute) {
             }
 
             composable<Destination.ResetPasswordRoute> {
-                ResetPasswordScreen(modifier = Modifier.padding(innerPadding))
+                ResetPasswordScreen(
+                    snackbarHostState = snackbarHostState,
+                    Modifier.padding(innerPadding)
+                )
             }
 
         }

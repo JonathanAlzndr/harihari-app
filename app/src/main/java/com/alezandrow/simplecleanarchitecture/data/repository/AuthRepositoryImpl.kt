@@ -63,8 +63,13 @@ class AuthRepositoryImpl @Inject constructor(
         return sessionDataSource.refreshCurrentUser()
     }
 
-    override suspend fun requestPasswordResetEmail(email: String) {
-        authDataSource.requestPasswordResetEmail(email)
+    override suspend fun requestPasswordResetEmail(email: String): AppResult<String> {
+        return try {
+            authDataSource.requestPasswordResetEmail(email)
+            AppResult.Success("Email Sent")
+        } catch(e: Exception) {
+            AppResult.Error(FirebaseAuthErrorMapper.map(e))
+        }
     }
 
     override suspend fun updatePassword(

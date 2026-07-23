@@ -19,7 +19,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -40,6 +39,7 @@ import com.alezandrow.simplecleanarchitecture.presentation.theme.Spacing
 
 @Composable
 fun LoginScreen(
+    snackbarHostState: SnackbarHostState,
     navigateToRequestResetPassword: () -> Unit,
     navigateToRegister: () -> Unit,
     modifier: Modifier = Modifier,
@@ -49,8 +49,6 @@ fun LoginScreen(
     val authUiState by viewModel.authUiState.collectAsStateWithLifecycle()
     val formState by viewModel.loginFormState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-
-    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
         viewModel.signInWithAutoFill(context)
@@ -76,7 +74,7 @@ fun LoginScreen(
 
             Image(
                 painter = painterResource(R.drawable.app_logo),
-                modifier = Modifier.size(120.dp),
+                modifier = Modifier.size(160.dp),
                 contentScale = ContentScale.Fit,
                 contentDescription = null
             )
@@ -92,7 +90,7 @@ fun LoginScreen(
 
             Text(
                 text = stringResource(R.string.sign_in_supporting),
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.bodyMedium
             )
 
             Spacer(modifier = Modifier.height(Spacing.lg))
@@ -128,7 +126,7 @@ fun LoginScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(Spacing.md))
+            Spacer(modifier = Modifier.height(Spacing.xs))
 
             Button(
                 onClick = viewModel::signInManual,
