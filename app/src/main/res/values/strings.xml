@@ -22,10 +22,13 @@
     <string name="update_password_supporting">Change your password to keep your account secure</string>
     <string name="update_password">Update Password</string>
     <string name="account_information">Account Information</string>
-    <string name = "account">Account</string>
+    <string name="account">Account</string>
     <string name="danger_zone">Danger Zone</string>
     <string name="sign_in_provider">Sign In Provider</string>
     <string name="phone_number">Phone Number</string>
     <string name="delete_account">Delete Account</string>
     <string name="delete_account_warning">This action is permanent and cannot be undone. All your data will be removed.</string>
+    <string name="add_task">Add Task</string>
+    <string name="profile">Profile</string>
+    <string name="home">Home</string>
 </resources>

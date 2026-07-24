@@ -8,17 +8,21 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.alezandrow.simplecleanarchitecture.R
 import com.alezandrow.simplecleanarchitecture.presentation.component.BottomNavigationBar
 import com.alezandrow.simplecleanarchitecture.presentation.component.TopNavigationBar
 import com.alezandrow.simplecleanarchitecture.presentation.icon.add_icon
+import com.alezandrow.simplecleanarchitecture.presentation.icon.arrow_back_icon
+import com.alezandrow.simplecleanarchitecture.presentation.navigation.TopBarConfig
 import com.alezandrow.simplecleanarchitecture.presentation.navigation.destination.Destination
+import com.alezandrow.simplecleanarchitecture.presentation.navigation.topBarConfig
 import com.alezandrow.simplecleanarchitecture.presentation.screen.add_task.AddTaskScreen
 import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeScreen
 import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeViewModel
@@ -30,20 +34,25 @@ fun MainNavGraph(snackbarHostState: SnackbarHostState, viewModel: HomeViewModel 
 
     val navController = rememberNavController()
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
-    val isAtHome = currentDestination?.hierarchy?.any {
-        it.hasRoute(Destination.HomeRoute::class)
-    } == true
-    val isAtAddTask = currentDestination?.hierarchy?.any {
-        it.hasRoute(Destination.AddTaskRoute::class)
-    } == true
+    val topBarConfig = topBarConfig(currentDestination)
 
     Scaffold(
         floatingActionButton = {
-            if (isAtHome) {
-                FloatingActionButton(onClick = { navController.navigate(Destination.AddTaskRoute) }) {
+            if (
+                currentDestination?.hasRoute(
+                    Destination.HomeRoute::class
+                ) == true
+            ) {
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate(
+                            Destination.AddTaskRoute
+                        )
+                    }
+                ) {
                     Icon(
                         imageVector = add_icon,
-                        contentDescription = "Add Task"
+                        contentDescription = stringResource(R.string.add_task)
                     )
                 }
             }
@@ -52,12 +61,37 @@ fun MainNavGraph(snackbarHostState: SnackbarHostState, viewModel: HomeViewModel 
             SnackbarHost(hostState = snackbarHostState)
         },
         bottomBar = {
-            if (!isAtAddTask) {
+            if (
+                currentDestination?.hasRoute(
+                    Destination.HomeRoute::class
+                ) == true ||
+                currentDestination?.hasRoute(
+                    Destination.ProfileRoute::class
+                ) == true
+            ) {
                 BottomNavigationBar(navController)
             }
         },
         topBar = {
-            TopNavigationBar(viewModel::signOut)
+            when (topBarConfig) {
+                is TopBarConfig.Back -> {
+                    TopNavigationBar(
+                        title = topBarConfig.title,
+                        onLogoutActionClick = viewModel::signOut
+                    )
+                }
+
+                is TopBarConfig.Default -> {
+                    TopNavigationBar(
+                        title = topBarConfig.title,
+                        onNavigationClick = navController::popBackStack,
+                        navigationIcon = arrow_back_icon,
+                        onLogoutActionClick = viewModel::signOut
+                    )
+                }
+
+                null -> Unit
+            }
         }
     ) { innerPadding ->
 
