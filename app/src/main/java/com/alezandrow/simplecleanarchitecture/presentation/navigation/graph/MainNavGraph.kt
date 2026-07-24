@@ -8,7 +8,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -73,8 +72,9 @@ fun MainNavGraph(snackbarHostState: SnackbarHostState, viewModel: HomeViewModel 
 
             composable<Destination.ProfileRoute> {
                 ProfileScreen(
+                    snackbarHostState = snackbarHostState,
                     navigateToChangePassword = { navController.navigate(Destination.UpdatePasswordRoute) },
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(innerPadding)
                 )
             }
 

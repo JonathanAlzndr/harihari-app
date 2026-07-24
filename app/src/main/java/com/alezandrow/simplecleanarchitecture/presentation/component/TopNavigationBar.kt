@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.alezandrow.simplecleanarchitecture.presentation.icon.person_icon
+import com.alezandrow.simplecleanarchitecture.presentation.icon.logout_icon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,7 +24,7 @@ fun TopNavigationBar(onActionClick: () -> Unit, modifier: Modifier = Modifier) {
                 onClick = onActionClick
             ) {
                 Icon(
-                    imageVector = person_icon,
+                    imageVector = logout_icon,
                     contentDescription = ""
                 )
             }
