@@ -14,7 +14,7 @@ import com.alezandrow.simplecleanarchitecture.presentation.component.ErrorLayout
 import com.alezandrow.simplecleanarchitecture.presentation.component.LoadingLayout
 import com.alezandrow.simplecleanarchitecture.presentation.component.TaskColumnLayout
 import com.alezandrow.simplecleanarchitecture.presentation.component.TaskSearchBar
-import com.alezandrow.simplecleanarchitecture.presentation.state.TaskEvent
+import com.alezandrow.simplecleanarchitecture.presentation.state.AppEvent
 import com.alezandrow.simplecleanarchitecture.presentation.state.TaskListUiState
 import com.alezandrow.simplecleanarchitecture.presentation.theme.Spacing
 
@@ -28,7 +28,7 @@ fun HomeScreen(snackbarHostState: SnackbarHostState, modifier: Modifier = Modifi
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect {
             when(it) {
-                is TaskEvent.ShowSnackbar -> {
+                is AppEvent.ShowSnackbar -> {
                     snackbarHostState.showSnackbar(it.message)
                 }
                 else -> Unit

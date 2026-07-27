@@ -77,6 +77,8 @@ fun MainNavGraph(snackbarHostState: SnackbarHostState, viewModel: HomeViewModel 
                 is TopBarConfig.Back -> {
                     TopNavigationBar(
                         title = topBarConfig.title,
+                        onNavigationClick = navController::popBackStack,
+                        navigationIcon = arrow_back_icon,
                         onLogoutActionClick = viewModel::signOut
                     )
                 }
@@ -84,8 +86,6 @@ fun MainNavGraph(snackbarHostState: SnackbarHostState, viewModel: HomeViewModel 
                 is TopBarConfig.Default -> {
                     TopNavigationBar(
                         title = topBarConfig.title,
-                        onNavigationClick = navController::popBackStack,
-                        navigationIcon = arrow_back_icon,
                         onLogoutActionClick = viewModel::signOut
                     )
                 }

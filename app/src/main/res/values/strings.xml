@@ -31,4 +31,8 @@
     <string name="add_task">Add Task</string>
     <string name="profile">Profile</string>
     <string name="home">Home</string>
+    <string name="verify_email_headline">Verify your email</string>
+    <string name="verified">"I'\m verified"</string>
+    <string name="send_verification">Resend verification email</string>
+    <string name="verify_email_supporting">We\'ve sent a verification link to this email</string>
 </resources>

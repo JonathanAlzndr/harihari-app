@@ -10,7 +10,7 @@ import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignOutUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.task.ChangeTaskStatusUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.task.DeleteTaskUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.task.GetTasksByTitleAndPriorityUseCase
-import com.alezandrow.simplecleanarchitecture.presentation.state.TaskEvent
+import com.alezandrow.simplecleanarchitecture.presentation.state.AppEvent
 import com.alezandrow.simplecleanarchitecture.presentation.state.TaskListUiState
 import com.alezandrow.simplecleanarchitecture.presentation.util.mapAppErrorToMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,7 +45,7 @@ class HomeViewModel @Inject constructor(
     private val _selectedPriority = MutableStateFlow<TaskPriority?>(null)
     val selectedPriority = _selectedPriority.asStateFlow()
 
-    private val _uiEvent = MutableSharedFlow<TaskEvent>()
+    private val _uiEvent = MutableSharedFlow<AppEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
@@ -103,10 +103,10 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             when (deleteTaskUseCase(task)) {
                 is AppResult.Error -> {
-                    _uiEvent.emit(TaskEvent.ShowSnackbar("Failed to Delete Task"))
+                    _uiEvent.emit(AppEvent.ShowSnackbar("Failed to Delete Task"))
                 }
                 is AppResult.Success<Unit> -> {
-                    _uiEvent.emit(TaskEvent.ShowSnackbar("Task Deleted Successfully"))
+                    _uiEvent.emit(AppEvent.ShowSnackbar("Task Deleted Successfully"))
                 }
             }
         }

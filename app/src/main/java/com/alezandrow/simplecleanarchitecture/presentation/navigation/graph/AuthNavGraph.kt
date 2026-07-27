@@ -53,7 +53,11 @@ fun AuthNavGraph(
 
             composable<Destination.VerifyRoute> { backStackEntry ->
                 val verifyRouteEmail: Destination.VerifyRoute = backStackEntry.toRoute()
-                VerifyEmailScreen(email = verifyRouteEmail.email)
+                VerifyEmailScreen(
+                    email = verifyRouteEmail.email,
+                    snackbarHostState = snackbarHostState,
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
 
             composable<Destination.ResetPasswordRoute> {

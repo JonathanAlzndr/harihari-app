@@ -14,7 +14,7 @@ interface AuthRepository {
 
     fun observeCurrentUser(): Flow<AuthUser?>
 
-    suspend fun sendEmailVerification()
+    suspend fun sendEmailVerification(): AppResult<String>
 
     suspend fun refreshCurrentUser(): AuthUser?
 

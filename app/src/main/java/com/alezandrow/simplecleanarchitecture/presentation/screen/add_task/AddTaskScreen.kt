@@ -48,7 +48,7 @@ import com.alezandrow.simplecleanarchitecture.presentation.component.LoadingLayo
 import com.alezandrow.simplecleanarchitecture.presentation.icon.check
 import com.alezandrow.simplecleanarchitecture.presentation.icon.date_range
 import com.alezandrow.simplecleanarchitecture.presentation.state.OperationUiState
-import com.alezandrow.simplecleanarchitecture.presentation.state.TaskEvent
+import com.alezandrow.simplecleanarchitecture.presentation.state.AppEvent
 import com.alezandrow.simplecleanarchitecture.presentation.util.toFormattedDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,7 +76,7 @@ fun AddTaskScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
 
-            if (event is TaskEvent.ShowSnackbar) {
+            if (event is AppEvent.ShowSnackbar) {
                 val result = snackbarHostState.showSnackbar(
                     event.message,
                     "Back to home",
