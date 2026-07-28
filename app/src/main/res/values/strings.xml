@@ -34,5 +34,8 @@
     <string name="verify_email_headline">Verify your email</string>
     <string name="verified">"I'\m verified"</string>
     <string name="send_verification">Resend verification email</string>
+    <string name="greeting">Hello, %s!</string>
+    <string name="get_things_done">Let\'s get things done</string>
     <string name="verify_email_supporting">We\'ve sent a verification link to this email</string>
+    <string name="no_task_found">No tasks found</string>
 </resources>

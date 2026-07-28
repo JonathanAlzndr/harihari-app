@@ -99,8 +99,8 @@ fun MainNavGraph(snackbarHostState: SnackbarHostState, viewModel: HomeViewModel 
             composable<Destination.HomeRoute> {
                 HomeScreen(
                     snackbarHostState = snackbarHostState,
+                    viewModel = viewModel,
                     modifier = Modifier.padding(innerPadding),
-                    viewModel = viewModel
                 )
             }
 

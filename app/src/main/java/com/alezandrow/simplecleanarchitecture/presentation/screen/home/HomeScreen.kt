@@ -1,5 +1,6 @@
 package com.alezandrow.simplecleanarchitecture.presentation.screen.home
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alezandrow.simplecleanarchitecture.presentation.component.ErrorLayout
+import com.alezandrow.simplecleanarchitecture.presentation.component.HomeHeader
 import com.alezandrow.simplecleanarchitecture.presentation.component.LoadingLayout
 import com.alezandrow.simplecleanarchitecture.presentation.component.TaskColumnLayout
 import com.alezandrow.simplecleanarchitecture.presentation.component.TaskSearchBar
@@ -19,47 +21,60 @@ import com.alezandrow.simplecleanarchitecture.presentation.state.TaskListUiState
 import com.alezandrow.simplecleanarchitecture.presentation.theme.Spacing
 
 @Composable
-fun HomeScreen(snackbarHostState: SnackbarHostState, modifier: Modifier = Modifier, viewModel: HomeViewModel) {
-
+fun HomeScreen(
+    snackbarHostState: SnackbarHostState,
+    viewModel: HomeViewModel,
+    modifier: Modifier = Modifier,
+) {
     val taskUiState by viewModel.taskListUiState.collectAsStateWithLifecycle()
     val currentPriority by viewModel.selectedPriority.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.uiEvent.collect {
-            when(it) {
-                is AppEvent.ShowSnackbar -> {
-                    snackbarHostState.showSnackbar(it.message)
-                }
-                else -> Unit
+        viewModel.uiEvent.collect { event ->
+            if (event is AppEvent.ShowSnackbar) {
+                snackbarHostState.showSnackbar(event.message)
             }
         }
     }
 
-    Column(modifier = modifier.fillMaxSize().padding(Spacing.md)) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = Spacing.md),
+        verticalArrangement = Arrangement.spacedBy(Spacing.md),
+    ) {
+        HomeHeader()
+
         TaskSearchBar(
             query = searchQuery,
             onQueryChange = viewModel::updateSearchQuery,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
 
         when (val state = taskUiState) {
-            is TaskListUiState.Error -> ErrorLayout(
-                message = state.message,
-                modifier = modifier.fillMaxSize()
-            )
+            TaskListUiState.Loading -> {
+                LoadingLayout(
+                    modifier = Modifier.weight(1f),
+                )
+            }
 
-            TaskListUiState.Loading -> LoadingLayout(modifier = modifier.fillMaxSize())
+            is TaskListUiState.Error -> {
+                ErrorLayout(
+                    message = state.message,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+
             is TaskListUiState.Success -> {
                 TaskColumnLayout(
                     tasks = state.tasks,
                     selectedPriority = currentPriority,
-                    onPrioritySelectedAction = viewModel::setFilterPriority,
+                    onPrioritySelected = viewModel::setFilterPriority,
                     onClickAction = viewModel::toggleTaskStatus,
-                    onDeleteTask = viewModel::deleteTask,
+                    modifier = Modifier.weight(1f),
                 )
             }
         }
     }
-
 }

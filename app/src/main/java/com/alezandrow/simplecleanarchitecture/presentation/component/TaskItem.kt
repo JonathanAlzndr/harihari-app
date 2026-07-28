@@ -28,7 +28,7 @@ import com.alezandrow.simplecleanarchitecture.presentation.icon.check_circle_fil
 import com.alezandrow.simplecleanarchitecture.presentation.icon.check_circle_outlined
 
 @Composable
-fun TaskCard(
+fun TaskItem(
     task: Task,
     onClickAction: (Task) -> Unit,
     modifier: Modifier = Modifier
@@ -64,7 +64,7 @@ fun TaskCard(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = task.description.firstOrNull()?.toString().orEmpty(),
+                    text = task.title.firstOrNull()?.toString().orEmpty(),
                     style = MaterialTheme.typography.labelLarge,
                     color = if (isDone) MaterialTheme.colorScheme.onSurfaceVariant
                     else MaterialTheme.colorScheme.onPrimaryContainer
@@ -74,7 +74,7 @@ fun TaskCard(
             Spacer(modifier = Modifier.width(16.dp))
 
             Text(
-                text = task.description,
+                text = task.title,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     textDecoration = if (isDone) TextDecoration.LineThrough else null
                 ),
@@ -84,7 +84,7 @@ fun TaskCard(
                 modifier = Modifier.weight(1f)
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(24.dp))
 
             Icon(
                 imageVector = if (isDone) check_circle_filled
