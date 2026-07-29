@@ -30,14 +30,14 @@ import com.alezandrow.simplecleanarchitecture.presentation.icon.check_circle_out
 @Composable
 fun TaskItem(
     task: Task,
-    onClickAction: (Task) -> Unit,
+    onClickAction: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val isDone = TaskStatus.DONE == task.taskStatus
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onClickAction(task) },
+            .clickable { onClickAction(task.id) },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             if (isDone) MaterialTheme.colorScheme.surfaceVariant

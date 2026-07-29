@@ -38,4 +38,8 @@
     <string name="get_things_done">Let\'s get things done</string>
     <string name="verify_email_supporting">We\'ve sent a verification link to this email</string>
     <string name="no_task_found">No tasks found</string>
+    <string name="add_task_headline">Create a new task</string>
+    <string name="edit_task_headline">Edit your task</string>
+    <string name="add_task_support">Stay organized and get things done</string>
+    <string name="edit_task_support">Update the details of your task</string>
 </resources>

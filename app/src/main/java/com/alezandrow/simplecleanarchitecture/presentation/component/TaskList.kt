@@ -12,7 +12,7 @@ import com.alezandrow.simplecleanarchitecture.presentation.theme.Spacing
 @Composable
 fun TaskList(
     tasks: List<Task>,
-    onClickAction: (Task) -> Unit,
+    onClickAction: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (tasks.isEmpty()) {
@@ -30,7 +30,7 @@ fun TaskList(
         ) { task ->
             TaskItem(
                 task = task,
-                onClickAction = { onClickAction(task) }
+                onClickAction = { onClickAction(task.id) }
             )
         }
     }

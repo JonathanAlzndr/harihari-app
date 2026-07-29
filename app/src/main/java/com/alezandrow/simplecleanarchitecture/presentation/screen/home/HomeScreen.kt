@@ -22,6 +22,7 @@ import com.alezandrow.simplecleanarchitecture.presentation.theme.Spacing
 
 @Composable
 fun HomeScreen(
+    onNavigateToTaskEditor: (String) -> Unit,
     snackbarHostState: SnackbarHostState,
     viewModel: HomeViewModel,
     modifier: Modifier = Modifier,
@@ -71,7 +72,7 @@ fun HomeScreen(
                     tasks = state.tasks,
                     selectedPriority = currentPriority,
                     onPrioritySelected = viewModel::setFilterPriority,
-                    onClickAction = viewModel::toggleTaskStatus,
+                    onClickAction = onNavigateToTaskEditor,
                     modifier = Modifier.weight(1f),
                 )
             }

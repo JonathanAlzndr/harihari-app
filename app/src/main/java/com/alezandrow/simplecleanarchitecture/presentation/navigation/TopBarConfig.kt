@@ -43,7 +43,7 @@ fun topBarConfig(
             )
         }
 
-        destination?.hasRoute(Destination.AddTaskRoute::class) == true -> {
+        destination?.hasRoute(Destination.TaskEditorRoute::class) == true -> {
             TopBarConfig.Back(
                 title = stringResource(R.string.add_task)
             )

@@ -14,12 +14,16 @@ class TaskFirestoreDataSource @Inject constructor(
     private val db: FirebaseFirestore,
 ) {
 
-    fun getTaskByTitleAndPriority(uid: String, title: String, priority:String?): Flow<List<TaskDto>> {
+    fun getTaskByTitleAndPriority(
+        uid: String,
+        title: String,
+        priority: String?
+    ): Flow<List<TaskDto>> {
         var dbRef: Query = db.collection("users")
             .document(uid)
             .collection("tasks")
 
-        if(priority != null) {
+        if (priority != null) {
             dbRef = dbRef.whereEqualTo("priority", priority)
         }
 
@@ -27,7 +31,7 @@ class TaskFirestoreDataSource @Inject constructor(
 
         return dbRef.snapshots().map { snapshots ->
             val allTasks = snapshots.documents.mapNotNull { it.toTaskDto() }
-            if(title.isNotBlank()) {
+            if (title.isNotBlank()) {
                 allTasks.filter { task ->
                     task.title.contains(title, ignoreCase = true)
                 }
@@ -45,19 +49,26 @@ class TaskFirestoreDataSource @Inject constructor(
             .set(task).await()
     }
 
-    suspend fun changeStatus(uid: String, task: TaskDto) {
-        val docRef = db.collection("users")
-            .document(uid)
-            .collection("tasks")
-            .document(task.id)
-        docRef.update("status", task.taskStatus).await()
-    }
-
-    suspend fun deleteTask(uid: String, task: TaskDto) {
+    suspend fun updateTask(uid: String, task: TaskDto) {
         db.collection("users")
             .document(uid)
             .collection("tasks")
             .document(task.id)
+            .set(task).await()
+    }
+
+    suspend fun getTaskById(uid: String, taskId: String): TaskDto? {
+        val docSnapshot = db.collection("users").document(uid)
+            .collection("tasks")
+            .document(taskId).get().await()
+        return docSnapshot.toTaskDto()
+    }
+
+    suspend fun deleteTask(uid: String, taskId: String) {
+        db.collection("users")
+            .document(uid)
+            .collection("tasks")
+            .document(taskId)
             .delete()
             .await()
     }

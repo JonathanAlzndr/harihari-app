@@ -15,7 +15,7 @@ fun TaskColumnLayout(
     tasks: List<Task>,
     selectedPriority: TaskPriority?,
     onPrioritySelected: (TaskPriority?) -> Unit,
-    onClickAction: (Task) -> Unit,
+    onClickAction: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(

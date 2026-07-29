@@ -9,10 +9,11 @@ interface TaskRepository {
 
     suspend fun addNewTask(task: Task): AppResult<Unit>
 
-    suspend fun changeTaskStatus(task: Task): AppResult<Unit>
+    suspend fun updateTask(task: Task): AppResult<Unit>
 
-    suspend fun deleteTask(task: Task): AppResult<Unit>
+    suspend fun deleteTask(taskId: String): AppResult<Unit>
 
     fun getTaskByTitleAndPriority(title: String, priority: TaskPriority?): Flow<AppResult<List<Task>>>
 
+    suspend fun getTaskById(taskId: String): AppResult<Task>
 }

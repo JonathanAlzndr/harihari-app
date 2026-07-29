@@ -1,5 +1,7 @@
 package com.alezandrow.simplecleanarchitecture.data.repository
 
+import android.util.Log
+import com.alezandrow.simplecleanarchitecture.common.AppError
 import com.alezandrow.simplecleanarchitecture.common.AppResult
 import com.alezandrow.simplecleanarchitecture.data.mapper.FirestoreErrorMapper
 import com.alezandrow.simplecleanarchitecture.data.mapper.toDto
@@ -30,22 +32,24 @@ class TaskRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun changeTaskStatus(task: Task): AppResult<Unit> {
+    override suspend fun updateTask(task: Task): AppResult<Unit> {
         val uid = sessionDataSource.requireCurrentUid()
         val taskDto = task.toDto()
+        Log.d("Update Task Repo", "updateTask -> taskDtoId : ${taskDto.id} taskId: ${task.id} ")
         return try {
-            taskDataSource.changeStatus(uid, taskDto)
+            taskDataSource.updateTask(uid, taskDto)
+            Log.d("Update Task Repo", "updateTask: Success")
             AppResult.Success(Unit)
         } catch (e: Exception) {
+            Log.d("Update Task Repo", "updateTask: Failed ${e.message}")
             AppResult.Error(FirestoreErrorMapper.map(e))
         }
     }
 
-    override suspend fun deleteTask(task: Task): AppResult<Unit> {
+    override suspend fun deleteTask(taskId: String): AppResult<Unit> {
         val uid = sessionDataSource.requireCurrentUid()
-        val taskDto = task.toDto()
         return try {
-            taskDataSource.deleteTask(uid, taskDto)
+            taskDataSource.deleteTask(uid, taskId)
             AppResult.Success(Unit)
         } catch (e: Exception) {
             AppResult.Error(FirestoreErrorMapper.map(e))
@@ -67,5 +71,19 @@ class TaskRepositoryImpl @Inject constructor(
             }.catch { e ->
                 AppResult.Error(FirestoreErrorMapper.map(e as Exception))
             }
+    }
+
+    override suspend fun getTaskById(taskId: String): AppResult<Task> {
+        return try {
+            val uid = sessionDataSource.requireCurrentUid()
+            val result = taskDataSource.getTaskById(uid, taskId)
+            if (result != null) {
+                AppResult.Success(result.toTaskDomain())
+            } else {
+                AppResult.Error(AppError.NotFound)
+            }
+        } catch (e: Exception) {
+            AppResult.Error(FirestoreErrorMapper.map(e))
+        }
     }
 }

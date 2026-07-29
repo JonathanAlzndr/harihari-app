@@ -19,6 +19,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,6 +30,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.alezandrow.simplecleanarchitecture.R
 import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
+import com.alezandrow.simplecleanarchitecture.presentation.component.ConfirmationDialog
 import com.alezandrow.simplecleanarchitecture.presentation.component.DangerZoneSection
 import com.alezandrow.simplecleanarchitecture.presentation.component.ErrorLayout
 import com.alezandrow.simplecleanarchitecture.presentation.component.InfoRow
@@ -35,6 +39,7 @@ import com.alezandrow.simplecleanarchitecture.presentation.component.ProfileHead
 import com.alezandrow.simplecleanarchitecture.presentation.component.ProfileItem
 import com.alezandrow.simplecleanarchitecture.presentation.icon.arrow_right_icon
 import com.alezandrow.simplecleanarchitecture.presentation.icon.lock
+import com.alezandrow.simplecleanarchitecture.presentation.icon.warning_icon
 import com.alezandrow.simplecleanarchitecture.presentation.state.AuthEvent
 import com.alezandrow.simplecleanarchitecture.presentation.state.ProfileUiState
 import com.alezandrow.simplecleanarchitecture.presentation.theme.Spacing
@@ -47,6 +52,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.currentUser.collectAsStateWithLifecycle()
+    var showAlertDialog by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -62,11 +68,26 @@ fun ProfileScreen(
 
             ProfileUiState.Loading -> LoadingLayout()
 
-            is ProfileUiState.Success -> ProfileContent(
-                userData = user.userData,
-                onChangePasswordClick = navigateToChangePassword,
-                onDeleteAccountClick = viewModel::deleteAccount
-            )
+            is ProfileUiState.Success -> {
+                ProfileContent(
+                    userData = user.userData,
+                    onChangePasswordClick = navigateToChangePassword,
+                    onDeleteAccountClick = { showAlertDialog = true }
+                )
+
+                if(showAlertDialog) {
+                    ConfirmationDialog(
+                        onDismissRequest = { showAlertDialog = false },
+                        onConfirmation = {
+                            viewModel.deleteAccount()
+                            showAlertDialog = false
+                        },
+                        dialogTitle = "Are you sure to delete account?",
+                        dialogText = "Associated task will be deleted and can't be restored",
+                        icon = warning_icon
+                    )
+                }
+            }
         }
     }
 }
@@ -104,7 +125,11 @@ fun ProfileContent(
         ) {
             Column(modifier = Modifier.padding(horizontal = Spacing.md, vertical = Spacing.xs)) {
                 InfoRow(label = stringResource(R.string.email_label), value = userData.email)
-                InfoRow(label = stringResource(R.string.sign_in_provider), value = userData.providerId, showDivider = false)
+                InfoRow(
+                    label = stringResource(R.string.sign_in_provider),
+                    value = userData.providerId,
+                    showDivider = false
+                )
             }
         }
 

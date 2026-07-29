@@ -3,12 +3,8 @@ package com.alezandrow.simplecleanarchitecture.presentation.screen.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alezandrow.simplecleanarchitecture.common.AppResult
-import com.alezandrow.simplecleanarchitecture.domain.entities.task.Task
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskPriority
-import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskStatus
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignOutUseCase
-import com.alezandrow.simplecleanarchitecture.domain.usecase.task.ChangeTaskStatusUseCase
-import com.alezandrow.simplecleanarchitecture.domain.usecase.task.DeleteTaskUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.task.GetTasksByTitleAndPriorityUseCase
 import com.alezandrow.simplecleanarchitecture.presentation.state.AppEvent
 import com.alezandrow.simplecleanarchitecture.presentation.state.TaskListUiState
@@ -33,8 +29,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val changeTaskStatusUseCase: ChangeTaskStatusUseCase,
-    private val deleteTaskUseCase: DeleteTaskUseCase,
     private val signOutUseCase: SignOutUseCase,
     private val getTasksByTitleAndPriority: GetTasksByTitleAndPriorityUseCase,
 ) : ViewModel() {
@@ -84,31 +78,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun toggleTaskStatus(task: Task) {
-        viewModelScope.launch {
-            val updatedTask = task.copy(
-                taskStatus = if (task.taskStatus == TaskStatus.DONE) TaskStatus.NEW else TaskStatus.DONE
-            )
-            changeTaskStatusUseCase(updatedTask)
-        }
-    }
-
     fun signOut() {
         viewModelScope.launch {
             signOutUseCase()
         }
     }
 
-    fun deleteTask(task: Task) {
-        viewModelScope.launch {
-            when (deleteTaskUseCase(task)) {
-                is AppResult.Error -> {
-                    _uiEvent.emit(AppEvent.ShowSnackbar("Failed to Delete Task"))
-                }
-                is AppResult.Success<Unit> -> {
-                    _uiEvent.emit(AppEvent.ShowSnackbar("Task Deleted Successfully"))
-                }
-            }
-        }
-    }
 }

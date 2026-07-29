@@ -12,7 +12,7 @@ import com.alezandrow.simplecleanarchitecture.presentation.theme.Spacing
 @Composable
 fun TaskPriorityFilter(
     selectedPriority: TaskPriority?,
-    onPrioritySelected: (TaskPriority?) -> Unit,
+    onPrioritySelected: (TaskPriority) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyRow(

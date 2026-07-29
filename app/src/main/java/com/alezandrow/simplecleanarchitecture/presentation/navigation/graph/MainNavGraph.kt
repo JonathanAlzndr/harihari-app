@@ -23,7 +23,7 @@ import com.alezandrow.simplecleanarchitecture.presentation.icon.arrow_back_icon
 import com.alezandrow.simplecleanarchitecture.presentation.navigation.TopBarConfig
 import com.alezandrow.simplecleanarchitecture.presentation.navigation.destination.Destination
 import com.alezandrow.simplecleanarchitecture.presentation.navigation.topBarConfig
-import com.alezandrow.simplecleanarchitecture.presentation.screen.add_task.AddTaskScreen
+import com.alezandrow.simplecleanarchitecture.presentation.screen.editor.TaskEditorScreen
 import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeScreen
 import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeViewModel
 import com.alezandrow.simplecleanarchitecture.presentation.screen.profile.ProfileScreen
@@ -46,7 +46,7 @@ fun MainNavGraph(snackbarHostState: SnackbarHostState, viewModel: HomeViewModel 
                 FloatingActionButton(
                     onClick = {
                         navController.navigate(
-                            Destination.AddTaskRoute
+                            Destination.TaskEditorRoute()
                         )
                     }
                 ) {
@@ -98,6 +98,11 @@ fun MainNavGraph(snackbarHostState: SnackbarHostState, viewModel: HomeViewModel 
         NavHost(navController = navController, startDestination = Destination.HomeRoute) {
             composable<Destination.HomeRoute> {
                 HomeScreen(
+                    onNavigateToTaskEditor = { taskId ->
+                        navController.navigate(
+                            Destination.TaskEditorRoute(taskId)
+                        )
+                    },
                     snackbarHostState = snackbarHostState,
                     viewModel = viewModel,
                     modifier = Modifier.padding(innerPadding),
@@ -119,8 +124,8 @@ fun MainNavGraph(snackbarHostState: SnackbarHostState, viewModel: HomeViewModel 
                 )
             }
 
-            composable<Destination.AddTaskRoute> {
-                AddTaskScreen(
+            composable<Destination.TaskEditorRoute> { backStackEntry ->
+                TaskEditorScreen(
                     navigateBack = { navController.popBackStack() },
                     snackbarHostState = snackbarHostState,
                     modifier = Modifier.padding(innerPadding)

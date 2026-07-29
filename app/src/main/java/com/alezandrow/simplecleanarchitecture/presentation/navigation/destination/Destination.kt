@@ -22,5 +22,5 @@ sealed interface Destination {
     @Serializable
     data object UpdatePasswordRoute : Destination
     @Serializable
-    data object AddTaskRoute : Destination
+    data class TaskEditorRoute(val taskId: String? = null) : Destination
 }
