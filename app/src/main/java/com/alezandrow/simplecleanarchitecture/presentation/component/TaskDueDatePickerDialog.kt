@@ -9,6 +9,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import com.alezandrow.simplecleanarchitecture.presentation.util.getTodayMillis
+import com.alezandrow.simplecleanarchitecture.presentation.util.toDatePickerMillis
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -20,7 +21,7 @@ fun TaskDueDatePickerDialog(
 
     val todayMillis = getTodayMillis()
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = initialDate,
+        initialSelectedDateMillis = initialDate?.toDatePickerMillis(),
         selectableDates = object: SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                 return utcTimeMillis >= todayMillis

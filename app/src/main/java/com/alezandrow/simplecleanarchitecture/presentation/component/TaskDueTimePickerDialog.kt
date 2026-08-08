@@ -8,7 +8,8 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import java.util.Calendar
+import com.alezandrow.simplecleanarchitecture.presentation.util.toLocalTimeAtSystemZone
+import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -17,17 +18,14 @@ fun TaskDueTimePickerDialog(
     onDismiss: () -> Unit,
     onTimeSelected: (hour: Int, minute: Int) -> Unit,
 ) {
-    val calendar = remember(initialDateTime) {
-        Calendar.getInstance().apply {
-            if(initialDateTime != null) {
-                timeInMillis = initialDateTime
-            }
-        }
+
+    val initialLocalTime = remember(initialDateTime) {
+        initialDateTime?.toLocalTimeAtSystemZone() ?: LocalTime.now()
     }
 
     val timePickerState = rememberTimePickerState(
-        initialHour = calendar.get(Calendar.HOUR_OF_DAY),
-        initialMinute = calendar.get(Calendar.MINUTE),
+        initialHour = initialLocalTime.hour,
+        initialMinute = initialLocalTime.minute,
         is24Hour = true
     )
 
