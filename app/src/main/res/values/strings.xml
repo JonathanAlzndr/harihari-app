@@ -42,4 +42,12 @@
     <string name="edit_task_headline">Edit your task</string>
     <string name="add_task_support">Stay organized and get things done</string>
     <string name="edit_task_support">Update the details of your task</string>
+    <string name="task_delete_confirmation">Are you sure to delete task?</string>
+    <string name="task_deleted_cannot_be_restored">Deleted task can\'t be restored</string>
+    <string name="back_to_home">Back to Home</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="need_exact_alarm_permission">Need exact alarm permission</string>
+    <string name="reminder_permission_required">The app requires special permission to ensure task reminders sound on time.</string>
+    <string name="open_settings">Open settings</string>
 </resources>

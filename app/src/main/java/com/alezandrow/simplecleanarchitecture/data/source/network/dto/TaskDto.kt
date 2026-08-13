@@ -5,7 +5,7 @@ data class TaskDto(
     val title: String = "",
     val createdAt: Long = 0L,
     val updatedAt: Long = 0L,
-    val dueDate: Long? = null,
+    val dueDate: Long = 0L,
     val description: String = "",
     val priority: String = "",
     val taskStatus: String = ""

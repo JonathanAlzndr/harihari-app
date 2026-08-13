@@ -1,5 +1,6 @@
 package com.alezandrow.simplecleanarchitecture.data.source.network
 
+import android.util.Log
 import com.alezandrow.simplecleanarchitecture.data.mapper.toTaskDto
 import com.alezandrow.simplecleanarchitecture.data.source.network.dto.TaskDto
 import com.google.firebase.firestore.FirebaseFirestore
@@ -19,6 +20,8 @@ class TaskFirestoreDataSource @Inject constructor(
         title: String,
         priority: String?
     ): Flow<List<TaskDto>> {
+
+        Log.d("TaskFirestoreDataSource", "getTaskByTitleAndPriority: function called")
         var dbRef: Query = db.collection("users")
             .document(uid)
             .collection("tasks")
@@ -30,6 +33,7 @@ class TaskFirestoreDataSource @Inject constructor(
         dbRef = dbRef.orderBy("createdAt")
 
         return dbRef.snapshots().map { snapshots ->
+            Log.d("TaskFirestoreDataSource", "snapshot received, size=${snapshots.documents.size}")
             val allTasks = snapshots.documents.mapNotNull { it.toTaskDto() }
             if (title.isNotBlank()) {
                 allTasks.filter { task ->
@@ -42,10 +46,12 @@ class TaskFirestoreDataSource @Inject constructor(
     }
 
     suspend fun addNewTask(uid: String, task: TaskDto) {
+
+        Log.d("TaskFirestoreDataSource", "addNewTask: $task")
         db.collection("users")
             .document(uid)
             .collection("tasks")
-            .document()
+            .document(task.id)
             .set(task).await()
     }
 
@@ -71,6 +77,14 @@ class TaskFirestoreDataSource @Inject constructor(
             .document(taskId)
             .delete()
             .await()
+    }
+
+    fun generateTaskId(uid: String): String {
+        return db.collection("users")
+            .document(uid)
+            .collection("tasks")
+            .document()
+            .id
     }
 
 }

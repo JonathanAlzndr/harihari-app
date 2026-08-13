@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.alezandrow.simplecleanarchitecture.common.AppResult
+import com.alezandrow.simplecleanarchitecture.data.alarm.AlarmPermissionHelper
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.Task
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskPriority
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskStatus
@@ -33,6 +34,7 @@ class TaskEditorViewModel @Inject constructor(
     private val getTaskByIdUseCase: GetTaskByIdUseCase,
     private val updateTaskUseCase: UpdateTaskUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
+    private val alarmPermissionHelper: AlarmPermissionHelper,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -82,6 +84,30 @@ class TaskEditorViewModel @Inject constructor(
         }
     }
 
+    fun updateDatePickerVisibility(isVisible: Boolean) {
+        _uiState.update { it.copy(showDatePicker = isVisible) }
+    }
+
+    fun updateTimePickerVisibility(isVisible: Boolean) {
+        _uiState.update { it.copy(showTimePicker = isVisible) }
+    }
+
+    fun updateAlarmPermissionVisibility(isVisible: Boolean) {
+        _uiState.update { it.copy(showAlarmPermission = isVisible) }
+    }
+
+    fun updateConfirmationDialogVisibility(isVisible: Boolean) {
+        _uiState.update { it.copy(showConfirmationDialog = isVisible) }
+    }
+
+    fun hasNotificationPermission(): Boolean = alarmPermissionHelper.hasNotificationPermission()
+
+    fun hasExactAlarmPermission(): Boolean = alarmPermissionHelper.canScheduleExactAlarms()
+
+    fun requestExactAlarmPermission() {
+        alarmPermissionHelper.requestExactAlarmPermission()
+    }
+
     fun saveTask() {
         val state = _uiState.value
 
@@ -94,7 +120,7 @@ class TaskEditorViewModel @Inject constructor(
             title = state.title.trim(),
             description = state.description.trim(),
             taskStatus = state.status,
-            dueDate = state.dueDateTime,
+            dueDate = state.dueDateTime ?: 0L,
             priority = state.priority,
         )
 

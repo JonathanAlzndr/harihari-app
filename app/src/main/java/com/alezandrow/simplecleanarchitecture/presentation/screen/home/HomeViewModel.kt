@@ -1,5 +1,6 @@
 package com.alezandrow.simplecleanarchitecture.presentation.screen.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alezandrow.simplecleanarchitecture.common.AppResult
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -44,11 +46,13 @@ class HomeViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     val taskListUiState: StateFlow<TaskListUiState> = combine(
-        _searchQuery.debounce(300L).distinctUntilChanged(),
-        _selectedPriority
+        _searchQuery.debounce(300L).distinctUntilChanged().onEach { Log.d("HomeVM", "query emit: $it")},
+        _selectedPriority.onEach{ Log.d("HomeVM", "priority emit : $it")}
     ) { query, priority ->
+        Log.d("HomeVM", "combine fired: $query, $priority")
         Pair(query, priority)
     }.flatMapLatest { (query, priority) ->
+        Log.d("HomeVM", "flatMapLatest calling repo")
         getTasksByTitleAndPriority(query, priority)
     }.map { result ->
         when (result) {

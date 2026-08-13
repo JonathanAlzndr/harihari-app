@@ -1,11 +1,13 @@
 package com.alezandrow.simplecleanarchitecture.di
 
+import android.app.AlarmManager
 import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.room.Room
 import com.alezandrow.simplecleanarchitecture.BuildConfig
-import com.alezandrow.simplecleanarchitecture.data.source.local.TaskDao
-import com.alezandrow.simplecleanarchitecture.data.source.local.TaskDatabase
+import com.alezandrow.simplecleanarchitecture.common.DEVICE_IP
+import com.alezandrow.simplecleanarchitecture.data.source.local.ReminderDao
+import com.alezandrow.simplecleanarchitecture.data.source.local.ReminderDatabase
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -24,18 +26,18 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideTaskDatabase(@ApplicationContext context: Context): TaskDatabase {
+    fun provideReminderDatabase(@ApplicationContext context: Context): ReminderDatabase {
         return Room.databaseBuilder(
             context,
-            TaskDatabase::class.java,
-            "task_db"
+            ReminderDatabase::class.java,
+            "reminder_db"
         ).build()
     }
 
     @Singleton
     @Provides
-    fun providesTaskDao(database: TaskDatabase): TaskDao {
-        return database.getTaskDao()
+    fun provideReminderDao(database: ReminderDatabase): ReminderDao {
+        return database.getReminderDao()
     }
 
     @Provides
@@ -45,7 +47,7 @@ object DataModule {
 
         if (BuildConfig.DEBUG) {
             auth.firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
-            val emulatorHost = "192.168.1.3"
+            val emulatorHost = DEVICE_IP
             val emulatorPort = 9099
 
             auth.useEmulator(emulatorHost, emulatorPort)
@@ -65,9 +67,15 @@ object DataModule {
     fun provideFirebaseFirestore(): FirebaseFirestore {
         val firestore = Firebase.firestore
         if (BuildConfig.DEBUG) {
-            firestore.useEmulator("192.168.1.3", 8080)
+            firestore.useEmulator(DEVICE_IP, 8080)
         }
         return firestore
+    }
+
+    @Provides
+    @Singleton
+    fun provideAlarmManager(@ApplicationContext context: Context): AlarmManager {
+        return context.getSystemService(AlarmManager::class.java) as AlarmManager
     }
 
 }

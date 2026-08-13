@@ -1,5 +1,9 @@
 package com.alezandrow.simplecleanarchitecture.presentation.screen.editor
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,8 +17,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alezandrow.simplecleanarchitecture.R
+import com.alezandrow.simplecleanarchitecture.presentation.component.AlarmPermissionDialog
 import com.alezandrow.simplecleanarchitecture.presentation.component.ConfirmationDialog
 import com.alezandrow.simplecleanarchitecture.presentation.component.TaskDueDatePickerDialog
 import com.alezandrow.simplecleanarchitecture.presentation.component.TaskDueTimePickerDialog
@@ -34,10 +41,17 @@ fun TaskEditorScreen(
     viewModel: TaskEditorViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var showAlertDialog by rememberSaveable { mutableStateOf(false) }
-    var showDatePicker by rememberSaveable { mutableStateOf(false) }
-    var showTimePicker by rememberSaveable { mutableStateOf(false) }
     var selectedDateMillis by rememberSaveable { mutableStateOf<Long?>(null) }
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted && !viewModel.hasExactAlarmPermission()) {
+            viewModel.updateAlarmPermissionVisibility(true)
+        } else {
+            viewModel.saveTask()
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
@@ -65,7 +79,7 @@ fun TaskEditorScreen(
             onStatusChange = viewModel::updateStatus,
             onPriorityChange = viewModel::updatePriority,
             onDueDateClick = {
-                showDatePicker = true
+                viewModel.updateDatePickerVisibility(true)
             },
             modifier = Modifier.weight(1f),
         )
@@ -74,44 +88,72 @@ fun TaskEditorScreen(
             mode = uiState.mode,
             isSaving = uiState.operation is OperationUiState.Saving,
             isDeleting = uiState.operation is OperationUiState.Deleting,
-            onSave = viewModel::saveTask,
-            onDelete = { showAlertDialog = true }
+            onSave = {
+                when {
+                    !viewModel.hasNotificationPermission() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+                        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+
+                    !viewModel.hasExactAlarmPermission() -> {
+                        viewModel.updateAlarmPermissionVisibility(true)
+                    }
+
+                    else -> {
+                        viewModel.saveTask()
+                    }
+                }
+            },
+            onDelete = { viewModel.updateConfirmationDialogVisibility(true) }
         )
     }
 
-    if (showAlertDialog) {
+    if (uiState.showConfirmationDialog) {
         ConfirmationDialog(
-            onDismissRequest = { showAlertDialog = false },
+            onDismissRequest = { viewModel.updateConfirmationDialogVisibility(false) },
             onConfirmation = {
                 viewModel.deleteTask()
-                showAlertDialog = false
+                viewModel.updateConfirmationDialogVisibility(false)
             },
-            dialogTitle = "Are you sure to delete task?",
-            dialogText = "Deleted task can't be restored",
+            dialogTitle = stringResource(R.string.task_delete_confirmation),
+            dialogText = stringResource(R.string.task_deleted_cannot_be_restored),
             icon = warning_icon
         )
     }
 
-    if (showDatePicker) {
+    if (uiState.showAlarmPermission) {
+        AlarmPermissionDialog(
+            onOpenSettings = {
+                viewModel.requestExactAlarmPermission()
+                viewModel.updateAlarmPermissionVisibility(false)
+                viewModel.saveTask()
+            },
+            onDismiss = {
+                viewModel.updateAlarmPermissionVisibility(false)
+                viewModel.saveTask()
+            }
+        )
+    }
+
+    if (uiState.showDatePicker) {
         TaskDueDatePickerDialog(
             initialDate = uiState.dueDateTime,
             onDismiss = {
-                showDatePicker = false
+                viewModel.updateDatePickerVisibility(false)
             },
             onDateSelected = { selectedDate ->
                 if (selectedDate != null) {
                     selectedDateMillis = selectedDate
-                    showDatePicker = false
-                    showTimePicker = true
+                    viewModel.updateDatePickerVisibility(false)
+                    viewModel.updateTimePickerVisibility(true)
                 }
             }
         )
     }
 
-    if (showTimePicker) {
+    if (uiState.showTimePicker) {
         TaskDueTimePickerDialog(
             onDismiss = {
-                showTimePicker = false
+                viewModel.updateTimePickerVisibility(false)
             },
             initialDateTime = uiState.dueDateTime,
             onTimeSelected = { hour, minute ->
@@ -121,11 +163,8 @@ fun TaskEditorScreen(
                 }
 
                 selectedDateMillis = null
-                showTimePicker = false
+                viewModel.updateTimePickerVisibility(false)
             }
         )
     }
 }
-
-
-

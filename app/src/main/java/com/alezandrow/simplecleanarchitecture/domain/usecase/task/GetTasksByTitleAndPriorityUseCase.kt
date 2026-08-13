@@ -9,5 +9,5 @@ import javax.inject.Inject
 
 class GetTasksByTitleAndPriorityUseCase @Inject constructor(private val taskRepository: TaskRepository) {
     operator fun invoke(title: String, priority: TaskPriority?): Flow<AppResult<List<Task>>> =
-        taskRepository.getTaskByTitleAndPriority(title, priority)
+        taskRepository.getTasksByTitleAndPriority(title, priority)
 }

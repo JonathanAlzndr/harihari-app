@@ -8,6 +8,8 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
+import com.alezandrow.simplecleanarchitecture.R
 import com.alezandrow.simplecleanarchitecture.presentation.util.toLocalTimeAtSystemZone
 import java.time.LocalTime
 
@@ -40,14 +42,14 @@ fun TaskDueTimePickerDialog(
                     )
                 },
             ) {
-                Text("Save")
+                Text(text = stringResource(R.string.save))
             }
         },
         dismissButton = {
             TextButton(
                 onClick = onDismiss,
             ) {
-                Text("Cancel")
+                Text(text = stringResource(R.string.cancel))
             }
         },
         text = {
