@@ -51,4 +51,8 @@
     <string name="reminder_permission_required">The app requires special permission to ensure task reminders sound on time.</string>
     <string name="open_settings">Open settings</string>
     <string name="search_placeholder">Search your task by title</string>
+    <string name="greeting_morning">Hello,Good Morning!</string>
+    <string name="greeting_afternoon">Hello, Good Afternoon!</string>
+    <string name="greeting_evening">Hello, Good Evening!</string>
+    <string name="greeting_night">Hello, Good Night!</string>
 </resources>

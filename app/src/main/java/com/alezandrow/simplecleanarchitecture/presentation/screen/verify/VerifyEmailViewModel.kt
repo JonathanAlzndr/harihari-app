@@ -6,7 +6,7 @@ import com.alezandrow.simplecleanarchitecture.common.AppResult
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.RefreshCurrentUserUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SendEmailVerificationUseCase
 import com.alezandrow.simplecleanarchitecture.presentation.state.AppEvent
-import com.alezandrow.simplecleanarchitecture.presentation.util.mapAppErrorToMessage
+import com.alezandrow.simplecleanarchitecture.util.mapAppErrorToMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

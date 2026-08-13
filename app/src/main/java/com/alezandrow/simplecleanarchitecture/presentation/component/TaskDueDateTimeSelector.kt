@@ -17,7 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.alezandrow.simplecleanarchitecture.presentation.icon.date_range
 import com.alezandrow.simplecleanarchitecture.presentation.theme.Spacing
-import com.alezandrow.simplecleanarchitecture.presentation.util.toFormattedDateTime
+import com.alezandrow.simplecleanarchitecture.util.toFormattedDateTime
 
 @Composable
 fun TaskDueDateTimeSelector(

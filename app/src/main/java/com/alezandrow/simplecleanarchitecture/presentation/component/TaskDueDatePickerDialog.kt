@@ -8,8 +8,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import com.alezandrow.simplecleanarchitecture.presentation.util.getTodayMillis
-import com.alezandrow.simplecleanarchitecture.presentation.util.toDatePickerMillis
+import com.alezandrow.simplecleanarchitecture.util.getTodayMillis
+import com.alezandrow.simplecleanarchitecture.util.toDatePickerMillis
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

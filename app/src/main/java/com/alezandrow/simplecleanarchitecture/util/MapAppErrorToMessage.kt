@@ -1,4 +1,4 @@
-package com.alezandrow.simplecleanarchitecture.presentation.util
+package com.alezandrow.simplecleanarchitecture.util
 
 import com.alezandrow.simplecleanarchitecture.common.AppError
 

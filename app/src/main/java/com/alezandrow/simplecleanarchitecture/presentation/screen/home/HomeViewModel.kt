@@ -9,7 +9,7 @@ import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignOutUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.task.GetTasksByTitleAndPriorityUseCase
 import com.alezandrow.simplecleanarchitecture.presentation.state.AppEvent
 import com.alezandrow.simplecleanarchitecture.presentation.state.TaskListUiState
-import com.alezandrow.simplecleanarchitecture.presentation.util.mapAppErrorToMessage
+import com.alezandrow.simplecleanarchitecture.util.mapAppErrorToMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview

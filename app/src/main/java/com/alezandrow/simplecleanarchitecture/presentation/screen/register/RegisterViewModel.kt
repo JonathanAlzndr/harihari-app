@@ -13,7 +13,7 @@ import com.alezandrow.simplecleanarchitecture.domain.validation.validator.Valida
 import com.alezandrow.simplecleanarchitecture.domain.validation.validator.ValidatePasswordUseCase
 import com.alezandrow.simplecleanarchitecture.presentation.state.AuthUiState
 import com.alezandrow.simplecleanarchitecture.presentation.state.RegisterFormState
-import com.alezandrow.simplecleanarchitecture.presentation.util.mapAppErrorToMessage
+import com.alezandrow.simplecleanarchitecture.util.mapAppErrorToMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

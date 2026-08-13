@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import com.alezandrow.simplecleanarchitecture.R
-import com.alezandrow.simplecleanarchitecture.presentation.util.toLocalTimeAtSystemZone
+import com.alezandrow.simplecleanarchitecture.util.toLocalTimeAtSystemZone
 import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)

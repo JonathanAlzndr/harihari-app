@@ -30,7 +30,7 @@ import com.alezandrow.simplecleanarchitecture.presentation.component.TaskEditorC
 import com.alezandrow.simplecleanarchitecture.presentation.icon.warning_icon
 import com.alezandrow.simplecleanarchitecture.presentation.state.AppEvent
 import com.alezandrow.simplecleanarchitecture.presentation.state.OperationUiState
-import com.alezandrow.simplecleanarchitecture.presentation.util.combineDateAndTime
+import com.alezandrow.simplecleanarchitecture.util.combineDateAndTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

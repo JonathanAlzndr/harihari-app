@@ -9,7 +9,7 @@ import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.DeleteAccountU
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.ObserveCurrentUserUseCase
 import com.alezandrow.simplecleanarchitecture.presentation.state.AuthEvent
 import com.alezandrow.simplecleanarchitecture.presentation.state.ProfileUiState
-import com.alezandrow.simplecleanarchitecture.presentation.util.mapAppErrorToMessage
+import com.alezandrow.simplecleanarchitecture.util.mapAppErrorToMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted

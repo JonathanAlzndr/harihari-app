@@ -1,5 +1,6 @@
-package com.alezandrow.simplecleanarchitecture.presentation.util
+package com.alezandrow.simplecleanarchitecture.util
 
+import com.alezandrow.simplecleanarchitecture.common.GreetingType
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -17,6 +18,16 @@ fun Long?.toFormattedDate(): String {
             .toLocalDate()
             .format(formatter)
     } ?: "Set due date"
+}
+
+fun getGreeting(): GreetingType {
+    val now = LocalTime.now()
+    return when (now.hour) {
+        in 0..11 -> GreetingType.MORNING
+        in 12..16 -> GreetingType.AFTERNOON
+        in 17..21 -> GreetingType.EVENING
+        else -> GreetingType.NIGHT
+    }
 }
 
 fun Long?.toFormattedDateTime(): String {
