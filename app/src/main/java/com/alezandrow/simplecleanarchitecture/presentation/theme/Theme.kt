@@ -10,32 +10,73 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = LightBlue,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+private val LightColorScheme = lightColorScheme(
+    primary = Blue40,
+    onPrimary = Blue100,
+    primaryContainer = Blue90,
+    onPrimaryContainer = Blue10,
+
+    secondary = BlueGrey40,
+    onSecondary = Blue100,
+    secondaryContainer = BlueGrey90,
+    onSecondaryContainer = BlueGrey10,
+
+    tertiary = Teal40,
+    onTertiary = Blue100,
+    tertiaryContainer = Teal90,
+    onTertiaryContainer = Teal10,
+
+    error = Red40,
+    onError = Blue100,
+    errorContainer = Red90,
+    onErrorContainer = Red10,
+
+    background = Neutral99,
+    onBackground = Neutral10,
+    surface = Neutral99,
+    onSurface = Neutral10,
+    surfaceVariant = NeutralVariant90,
+    onSurfaceVariant = NeutralVariant30,
+
+    outline = NeutralVariant50,
+    outlineVariant = NeutralVariant80,
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = LightBlue,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+private val DarkColorScheme = darkColorScheme(
+    primary = Blue80,
+    onPrimary = Blue20,
+    primaryContainer = Blue30,
+    onPrimaryContainer = Blue90,
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    secondary = BlueGrey80,
+    onSecondary = BlueGrey20,
+    secondaryContainer = BlueGrey30,
+    onSecondaryContainer = BlueGrey90,
+
+    tertiary = Teal80,
+    onTertiary = Teal20,
+    tertiaryContainer = Teal30,
+    onTertiaryContainer = Teal90,
+
+    error = Red80,
+    onError = Red20,
+    errorContainer = Red30,
+    onErrorContainer = Red90,
+
+    background = Neutral10,
+    onBackground = Neutral90,
+    surface = Neutral10,
+    onSurface = Neutral90,
+    surfaceVariant = NeutralVariant30,
+    onSurfaceVariant = NeutralVariant80,
+
+    outline = NeutralVariant50,
+    outlineVariant = NeutralVariant30,
 )
 
 @Composable
 fun SimpleCleanArchitectureTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
