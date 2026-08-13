@@ -1,4 +1,4 @@
-package com.example.test
+package com.alezandrow.simplecleanarchitecture.presentation.icon
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType

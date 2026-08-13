@@ -9,8 +9,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.test.search_icon
+import com.alezandrow.simplecleanarchitecture.R
+import com.alezandrow.simplecleanarchitecture.presentation.icon.search_icon
 
 @Composable
 fun TaskSearchBar(
@@ -22,7 +24,7 @@ fun TaskSearchBar(
         value = query,
         onValueChange = onQueryChange,
         modifier = modifier,
-        placeholder = { Text("Search your task by title") },
+        placeholder = { Text( text = stringResource(R.string.search_placeholder)) },
         leadingIcon = {
             Icon(
                 imageVector = search_icon,
