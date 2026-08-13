@@ -1,16 +1,19 @@
 package com.alezandrow.simplecleanarchitecture.domain.repository
 
+import com.alezandrow.simplecleanarchitecture.common.AppResult
 import com.alezandrow.simplecleanarchitecture.domain.entities.task.Task
+import com.alezandrow.simplecleanarchitecture.domain.entities.task.TaskPriority
 import kotlinx.coroutines.flow.Flow
 
 interface TaskRepository {
 
-    suspend fun addNewTask(task: Task)
+    suspend fun addNewTask(task: Task): AppResult<Unit>
 
-    suspend fun changeTaskStatus(task: Task)
+    suspend fun updateTask(task: Task): AppResult<Unit>
 
-    fun getAllTasks(): Flow<List<Task>>
+    suspend fun deleteTask(taskId: String): AppResult<Unit>
 
-    suspend fun deleteTask(task: Task)
+    fun getTasksByTitleAndPriority(title: String, priority: TaskPriority?): Flow<AppResult<List<Task>>>
 
+    suspend fun getTaskById(taskId: String): AppResult<Task>
 }

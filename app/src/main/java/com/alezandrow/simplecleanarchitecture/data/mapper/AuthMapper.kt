@@ -5,6 +5,7 @@ import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthProvider
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
 import java.io.IOException
@@ -18,10 +19,19 @@ fun AuthResult.toAuthUser(): AuthUser {
 }
 
 fun FirebaseUser.toAuthUser(): AuthUser {
+
+    val actualProviderId = providerData
+        .map { it.providerId }
+        .firstOrNull { it != FirebaseAuthProvider.PROVIDER_ID }
+        ?: providerId
+
     return AuthUser(
         uid = uid,
         email = email.orEmpty(),
-        isEmailVerified = isEmailVerified
+        isEmailVerified = isEmailVerified,
+        displayName = displayName.orEmpty(),
+        providerId = actualProviderId,
+        photoUrl = photoUrl
     )
 }
 

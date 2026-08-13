@@ -1,8 +1,6 @@
 package com.alezandrow.simplecleanarchitecture.presentation.component
 
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -10,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import com.alezandrow.simplecleanarchitecture.presentation.icon.lock
 
 @Composable
 fun PasswordInputText(
@@ -28,7 +27,7 @@ fun PasswordInputText(
         modifier = modifier,
         label = { Text(label) },
         leadingIcon = {
-            Icon(imageVector = Icons.Default.Lock, contentDescription = "Password Icon")
+            Icon(imageVector = lock, contentDescription = "Password Icon")
         },
         isError = isError,
         supportingText = {

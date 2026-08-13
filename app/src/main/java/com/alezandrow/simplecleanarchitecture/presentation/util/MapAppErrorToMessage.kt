@@ -8,7 +8,11 @@ fun mapAppErrorToMessage(error: AppError): String {
         is AppError.InvalidCredentials -> "Email or password wrong."
         is AppError.UserNotFound -> "Account is not found"
         is AppError.EmailAlreadyInUse -> "Email is already in use."
+        is AppError.AlreadyExists -> "Document Already Exists"
+        is AppError.Cancelled -> "Process Cancelled"
+        is AppError.PermissionDenied -> "Permission Denied"
         is AppError.Validation -> error.message
         is AppError.Unknown -> error.message
+        else -> { "Unknown Error" }
     }
 }

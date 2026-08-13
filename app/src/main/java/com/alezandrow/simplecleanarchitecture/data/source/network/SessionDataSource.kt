@@ -1,5 +1,6 @@
 package com.alezandrow.simplecleanarchitecture.data.source.network
 
+import android.util.Log
 import com.alezandrow.simplecleanarchitecture.data.mapper.toAuthUser
 import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
 import com.google.firebase.auth.FirebaseAuth
@@ -32,7 +33,9 @@ class SessionDataSource @Inject constructor(
         return user
     }
 
-    fun requireCurrentUid(): String =
-        auth.currentUser?.uid
+    fun requireCurrentUid(): String {
+        Log.d("SessionDataSource", "requireCurrentUid: called")
+        return auth.currentUser?.uid
             ?: error("User not authenticated")
+    }
 }

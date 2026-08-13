@@ -1,8 +1,5 @@
 package com.alezandrow.simplecleanarchitecture.presentation.component
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
@@ -13,6 +10,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.alezandrow.simplecleanarchitecture.presentation.icon.account_circle
+import com.alezandrow.simplecleanarchitecture.presentation.icon.home
 import com.alezandrow.simplecleanarchitecture.presentation.navigation.destination.Destination
 import com.alezandrow.simplecleanarchitecture.presentation.navigation.destination.NavItem
 
@@ -24,17 +23,12 @@ fun BottomNavigationBar(navController: NavController, modifier: Modifier = Modif
     val routes = listOf(
         NavItem(
             title = "Home",
-            icon = Icons.Default.Home,
+            icon = home,
             route = Destination.HomeRoute
         ),
         NavItem(
-            title = "Camera",
-            icon = camera,
-            route = Destination.CameraRoute
-        ),
-        NavItem(
             title = "Profile",
-            icon = Icons.Default.Person,
+            icon = account_circle,
             route = Destination.ProfileRoute
         )
     )

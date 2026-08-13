@@ -1,5 +1,6 @@
 package com.alezandrow.simplecleanarchitecture.presentation.screen.register
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
@@ -20,17 +22,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.alezandrow.simplecleanarchitecture.R
 import com.alezandrow.simplecleanarchitecture.presentation.component.EmailInputText
 import com.alezandrow.simplecleanarchitecture.presentation.component.LoadingLayout
 import com.alezandrow.simplecleanarchitecture.presentation.component.PasswordInputText
 import com.alezandrow.simplecleanarchitecture.presentation.state.AuthUiState
+import com.alezandrow.simplecleanarchitecture.presentation.theme.SimpleCleanArchitectureTheme
+import com.alezandrow.simplecleanarchitecture.presentation.theme.Spacing
 
 @Composable
 fun RegisterScreen(
@@ -61,22 +68,38 @@ fun RegisterScreen(
         }
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(modifier = modifier
+        .fillMaxSize()
+        .padding(Spacing.lg)) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
 
-            Text(
-                text = "Sign Up",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold
+            Image(
+                painter = painterResource(R.drawable.app_logo),
+                modifier = Modifier.size(160.dp),
+                contentScale = ContentScale.Fit,
+                contentDescription = null
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(Spacing.lg))
+
+            Text(
+                text = stringResource(R.string.sign_up_headline),
+                style = MaterialTheme.typography.headlineMedium
+            )
+
+            Spacer(modifier = Modifier.height(Spacing.sm))
+
+            Text(
+                text = stringResource(R.string.sign_up_supporting),
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            Spacer(modifier = Modifier.height(Spacing.lg))
 
             EmailInputText(
                 value = formState.email,
@@ -86,7 +109,7 @@ fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(Spacing.sm))
 
             PasswordInputText(
                 value = formState.password,
@@ -98,7 +121,7 @@ fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(Spacing.sm))
 
             PasswordInputText(
                 value = formState.confirmPassword,
@@ -110,7 +133,7 @@ fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(Spacing.md))
 
             Button(
                 onClick = {
@@ -122,16 +145,15 @@ fun RegisterScreen(
                 Text(text = "Sign Up")
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(Spacing.md))
 
             TextButton(
                 onClick = navigateToLogin,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "Already have an account? Go to SignIn",
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center
+                    text = stringResource(R.string.have_account),
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }
@@ -144,5 +166,13 @@ fun RegisterScreen(
             hostState = snackbarHostState,
             modifier = Modifier.align(Alignment.BottomCenter)
         )
+    }
+}
+
+@Preview
+@Composable
+private fun RegisterScreenPreview() {
+    SimpleCleanArchitectureTheme {
+        RegisterScreen({},{})
     }
 }

@@ -14,11 +14,11 @@ interface AuthRepository {
 
     fun observeCurrentUser(): Flow<AuthUser?>
 
-    suspend fun sendEmailVerification()
+    suspend fun sendEmailVerification(): AppResult<String>
 
     suspend fun refreshCurrentUser(): AuthUser?
 
-    suspend fun requestPasswordResetEmail(email: String)
+    suspend fun requestPasswordResetEmail(email: String): AppResult<String>
 
     suspend fun updatePassword(currentPassword: String, newPassword: String): AppResult<String>
 

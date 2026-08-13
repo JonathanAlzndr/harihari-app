@@ -1,91 +1,136 @@
 package com.alezandrow.simplecleanarchitecture.presentation.navigation.graph
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.alezandrow.simplecleanarchitecture.presentation.component.AddTaskDialog
+import com.alezandrow.simplecleanarchitecture.R
 import com.alezandrow.simplecleanarchitecture.presentation.component.BottomNavigationBar
 import com.alezandrow.simplecleanarchitecture.presentation.component.TopNavigationBar
+import com.alezandrow.simplecleanarchitecture.presentation.icon.add_icon
+import com.alezandrow.simplecleanarchitecture.presentation.icon.arrow_back_icon
+import com.alezandrow.simplecleanarchitecture.presentation.navigation.TopBarConfig
 import com.alezandrow.simplecleanarchitecture.presentation.navigation.destination.Destination
-import com.alezandrow.simplecleanarchitecture.presentation.screen.camera.CameraScreen
+import com.alezandrow.simplecleanarchitecture.presentation.navigation.topBarConfig
+import com.alezandrow.simplecleanarchitecture.presentation.screen.editor.TaskEditorScreen
 import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeScreen
 import com.alezandrow.simplecleanarchitecture.presentation.screen.home.HomeViewModel
 import com.alezandrow.simplecleanarchitecture.presentation.screen.profile.ProfileScreen
 import com.alezandrow.simplecleanarchitecture.presentation.screen.update_password.UpdatePasswordScreen
 
 @Composable
-fun MainNavGraph(viewModel: HomeViewModel = hiltViewModel()) {
+fun MainNavGraph(snackbarHostState: SnackbarHostState, viewModel: HomeViewModel = hiltViewModel()) {
 
-    var showDialog by remember { mutableStateOf(false) }
     val navController = rememberNavController()
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
-    val isAtHome = currentDestination?.hierarchy?.any {
-        it.hasRoute(Destination.HomeRoute::class)
-    } == true
+    val topBarConfig = topBarConfig(currentDestination)
 
     Scaffold(
         floatingActionButton = {
-            if (isAtHome) {
-                FloatingActionButton(onClick = { showDialog = true }) {
+            if (
+                currentDestination?.hasRoute(
+                    Destination.HomeRoute::class
+                ) == true
+            ) {
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate(
+                            Destination.TaskEditorRoute()
+                        )
+                    }
+                ) {
                     Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add Task"
+                        imageVector = add_icon,
+                        contentDescription = stringResource(R.string.add_task)
                     )
                 }
             }
         },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         bottomBar = {
-            BottomNavigationBar(navController)
+            if (
+                currentDestination?.hasRoute(
+                    Destination.HomeRoute::class
+                ) == true ||
+                currentDestination?.hasRoute(
+                    Destination.ProfileRoute::class
+                ) == true
+            ) {
+                BottomNavigationBar(navController)
+            }
         },
         topBar = {
-            TopNavigationBar(viewModel::signOut)
+            when (topBarConfig) {
+                is TopBarConfig.Back -> {
+                    TopNavigationBar(
+                        title = topBarConfig.title,
+                        onNavigationClick = navController::popBackStack,
+                        navigationIcon = arrow_back_icon,
+                        onLogoutActionClick = viewModel::signOut
+                    )
+                }
+
+                is TopBarConfig.Default -> {
+                    TopNavigationBar(
+                        title = topBarConfig.title,
+                        onLogoutActionClick = viewModel::signOut
+                    )
+                }
+
+                null -> Unit
+            }
         }
     ) { innerPadding ->
 
-        if (showDialog) {
-            AddTaskDialog(
-                onConfirmation = viewModel::addNewTask,
-                onDismissRequest = { showDialog = false }
-            )
-        }
-
         NavHost(navController = navController, startDestination = Destination.HomeRoute) {
             composable<Destination.HomeRoute> {
-                HomeScreen(Modifier.padding(innerPadding), viewModel)
+                HomeScreen(
+                    onNavigateToTaskEditor = { taskId ->
+                        navController.navigate(
+                            Destination.TaskEditorRoute(taskId)
+                        )
+                    },
+                    snackbarHostState = snackbarHostState,
+                    viewModel = viewModel,
+                    modifier = Modifier.padding(innerPadding),
+                )
             }
 
             composable<Destination.ProfileRoute> {
                 ProfileScreen(
+                    snackbarHostState = snackbarHostState,
                     navigateToChangePassword = { navController.navigate(Destination.UpdatePasswordRoute) },
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(innerPadding)
                 )
             }
 
             composable<Destination.UpdatePasswordRoute> {
-                UpdatePasswordScreen(modifier = Modifier.padding(innerPadding))
+                UpdatePasswordScreen(
+                    snackbarHostState = snackbarHostState,
+                    Modifier.padding(innerPadding)
+                )
             }
 
-            composable<Destination.CameraRoute> {
-                CameraScreen(modifier = Modifier.padding(innerPadding))
+            composable<Destination.TaskEditorRoute> { backStackEntry ->
+                TaskEditorScreen(
+                    navigateBack = { navController.popBackStack() },
+                    snackbarHostState = snackbarHostState,
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
-
         }
     }
 }
