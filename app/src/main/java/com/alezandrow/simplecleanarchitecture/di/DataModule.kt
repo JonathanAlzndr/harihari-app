@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.room.Room
 import com.alezandrow.simplecleanarchitecture.BuildConfig
-import com.alezandrow.simplecleanarchitecture.common.DEVICE_IP
 import com.alezandrow.simplecleanarchitecture.data.source.local.ReminderDao
 import com.alezandrow.simplecleanarchitecture.data.source.local.ReminderDatabase
 import com.google.firebase.Firebase
@@ -47,7 +46,7 @@ object DataModule {
 
         if (BuildConfig.DEBUG) {
             auth.firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
-            val emulatorHost = DEVICE_IP
+            val emulatorHost = BuildConfig.DEVICE_IP
             val emulatorPort = 9099
 
             auth.useEmulator(emulatorHost, emulatorPort)
@@ -67,7 +66,7 @@ object DataModule {
     fun provideFirebaseFirestore(): FirebaseFirestore {
         val firestore = Firebase.firestore
         if (BuildConfig.DEBUG) {
-            firestore.useEmulator(DEVICE_IP, 8080)
+            firestore.useEmulator(BuildConfig.DEVICE_IP, 8080)
         }
         return firestore
     }
