@@ -85,5 +85,7 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     // Work Manager
     implementation(libs.androidx.work.runtime.ktx)
+    // Testing
+    testImplementation(libs.mockk)
 
 }

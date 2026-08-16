@@ -18,6 +18,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SimpleCleanArchitecture.Splash">
 
+        <meta-data
+            android:name="asset_statements"
+            android:resource="@string/asset_statements" />
+
         <receiver
             android:name=".data.alarm.BootCompletedReceiver"
             android:enabled="true"
