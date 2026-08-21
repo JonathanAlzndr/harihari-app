@@ -21,7 +21,7 @@
 | <img src="screenshots/profile.jpeg" width="250"> | <img src="screenshots/update_password.jpeg" width="250"> | <img src="screenshots/notification.jpeg" width="250"> |
 ## Demo Video
 
-[▶️ Watch Demo Video](https://www.youtube.com/watch?v=m8yjMPSx-oU)
+[▶️ Watch Demo Video](https://drive.google.com/file/d/1VNUytaoYeUgITpqS5-VlUspLTzLmqazy/view?usp=drive_link)
 
 ---
 
