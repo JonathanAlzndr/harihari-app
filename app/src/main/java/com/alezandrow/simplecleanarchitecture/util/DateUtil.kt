@@ -10,18 +10,19 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-fun Long?.toFormattedDate(): String {
+fun Long?.toFormattedDate(
+    zoneId: ZoneId = ZoneId.systemDefault()
+): String {
     return this?.let {
         val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.getDefault())
         Instant.ofEpochMilli(it)
-            .atZone(ZoneId.systemDefault())
+            .atZone(zoneId)
             .toLocalDate()
             .format(formatter)
     } ?: "Set due date"
 }
 
-fun getGreeting(): GreetingType {
-    val now = LocalTime.now()
+fun getGreeting(now: LocalTime = LocalTime.now()): GreetingType {
     return when (now.hour) {
         in 0..11 -> GreetingType.MORNING
         in 12..16 -> GreetingType.AFTERNOON
@@ -74,8 +75,13 @@ fun Long.toLocalTimeAtSystemZone(): LocalTime {
         .toLocalTime()
 }
 
-fun getTodayMillis(): Long {
-    return LocalDate.now().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
+fun getTodayMillis(
+    date: LocalDate = LocalDate.now()
+): Long {
+    return date
+        .atStartOfDay(ZoneOffset.UTC)
+        .toInstant()
+        .toEpochMilli()
 }
 
 fun Long.toDatePickerMillis(): Long {
