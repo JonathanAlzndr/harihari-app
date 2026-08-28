@@ -1,12 +1,10 @@
 package com.alezandrow.simplecleanarchitecture.domain.entities.user
 
-import android.net.Uri
-
 data class AuthUser(
     val uid: String,
     val email: String,
     val isEmailVerified: Boolean = false,
     val providerId: String = "",
-    val photoUrl: Uri? = null,
+    val photoUrl: String? = null,
     val displayName: String = ""
 )

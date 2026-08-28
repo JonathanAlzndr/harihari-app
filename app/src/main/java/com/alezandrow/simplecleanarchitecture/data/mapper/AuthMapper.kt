@@ -31,7 +31,7 @@ fun FirebaseUser.toAuthUser(): AuthUser {
         isEmailVerified = isEmailVerified,
         displayName = displayName.orEmpty(),
         providerId = actualProviderId,
-        photoUrl = photoUrl
+        photoUrl = photoUrl.toString()
     )
 }
 
