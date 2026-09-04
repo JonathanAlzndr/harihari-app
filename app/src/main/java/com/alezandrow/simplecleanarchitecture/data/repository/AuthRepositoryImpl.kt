@@ -1,12 +1,11 @@
 package com.alezandrow.simplecleanarchitecture.data.repository
 
-import android.content.Context
-import androidx.credentials.Credential
 import com.alezandrow.simplecleanarchitecture.common.AppError
 import com.alezandrow.simplecleanarchitecture.common.AppResult
 import com.alezandrow.simplecleanarchitecture.data.mapper.FirebaseAuthErrorMapper
 import com.alezandrow.simplecleanarchitecture.data.source.network.FirebaseAuthDataSource
 import com.alezandrow.simplecleanarchitecture.data.source.network.SessionDataSource
+import com.alezandrow.simplecleanarchitecture.domain.entities.auth.AuthCredential
 import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
 import com.alezandrow.simplecleanarchitecture.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
@@ -98,39 +97,11 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveCredential(
-        email: String,
-        password: String,
-        context: Any
-    ): AppResult<Unit> {
-        val androidContext =
-            context as? Context ?: return AppResult.Error(AppError.Unknown("Context is not valid"))
+    override suspend fun signInWithGoogleCredential(credential: AuthCredential.Google): AppResult<AuthUser> {
         return try {
-            authDataSource.saveCredential(email, password, androidContext)
-            AppResult.Success(Unit)
-        } catch (e: Exception) {
-            AppResult.Error(FirebaseAuthErrorMapper.map(e))
-        }
-    }
-
-    override suspend fun getSavedCredential(context: Any): AppResult<Credential> {
-        val androidContext =
-            context as? Context ?: return AppResult.Error(AppError.Unknown("Context is not valid"))
-        return try {
-            val credential = authDataSource.getSavedCredential(androidContext)
-            AppResult.Success(credential)
-        } catch (e: Exception) {
-            AppResult.Error(FirebaseAuthErrorMapper.map(e))
-        }
-    }
-
-    override suspend fun signInWithGoogle(context: Any): AppResult<AuthUser> {
-        val androidContext = context as? Context ?: return AppResult.Error(AppError.Unknown("Context is not valid"))
-
-        return try {
-            val authUser = authDataSource.signInWithGoogle(androidContext)
+            val authUser = authDataSource.signInWithGoogleIdToken(credential.idToken)
             AppResult.Success(authUser)
-        } catch (e: Exception) {
+        } catch(e: Exception) {
             AppResult.Error(FirebaseAuthErrorMapper.map(e))
         }
     }

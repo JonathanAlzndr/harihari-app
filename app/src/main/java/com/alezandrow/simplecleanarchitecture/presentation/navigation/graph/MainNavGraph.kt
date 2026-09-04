@@ -8,6 +8,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -35,6 +36,7 @@ fun MainNavGraph(snackbarHostState: SnackbarHostState, viewModel: HomeViewModel 
     val navController = rememberNavController()
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
     val topBarConfig = topBarConfig(currentDestination)
+    val context = LocalContext.current
 
     Scaffold(
         floatingActionButton = {
@@ -79,14 +81,14 @@ fun MainNavGraph(snackbarHostState: SnackbarHostState, viewModel: HomeViewModel 
                         title = topBarConfig.title,
                         onNavigationClick = navController::popBackStack,
                         navigationIcon = arrow_back_icon,
-                        onLogoutActionClick = viewModel::signOut
+                        onLogoutActionClick = { viewModel.signOut(context) }
                     )
                 }
 
                 is TopBarConfig.Default -> {
                     TopNavigationBar(
                         title = topBarConfig.title,
-                        onLogoutActionClick = viewModel::signOut
+                        onLogoutActionClick = { viewModel.signOut(context) }
                     )
                 }
 

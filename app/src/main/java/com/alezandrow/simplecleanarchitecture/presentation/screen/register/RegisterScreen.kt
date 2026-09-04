@@ -114,7 +114,7 @@ fun RegisterScreen(
             PasswordInputText(
                 value = formState.password,
                 onValueChange = { viewModel.onPasswordChanged(it) },
-                label = "Password",
+                label = stringResource(R.string.password_label),
                 isError = formState.passwordError != null,
                 errorMessage = formState.passwordError,
                 imeAction = ImeAction.Next,
@@ -126,7 +126,7 @@ fun RegisterScreen(
             PasswordInputText(
                 value = formState.confirmPassword,
                 onValueChange = { viewModel.onConfirmPasswordChanged(it) },
-                label = "Confirm Password",
+                label = stringResource(R.string.confirm_password_label),
                 imeAction = ImeAction.Done,
                 isError = formState.confirmPasswordError != null,
                 errorMessage = formState.confirmPasswordError,
@@ -142,7 +142,7 @@ fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = authUiState !is AuthUiState.Loading
             ) {
-                Text(text = "Sign Up")
+                Text(text = stringResource(R.string.sign_up))
             }
 
             Spacer(modifier = Modifier.height(Spacing.md))

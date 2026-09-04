@@ -1,7 +1,7 @@
 package com.alezandrow.simplecleanarchitecture.domain.repository
 
-import androidx.credentials.Credential
 import com.alezandrow.simplecleanarchitecture.common.AppResult
+import com.alezandrow.simplecleanarchitecture.domain.entities.auth.AuthCredential
 import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
 import kotlinx.coroutines.flow.Flow
 
@@ -24,9 +24,5 @@ interface AuthRepository {
 
     suspend fun deleteAccount(): AppResult<String>
 
-    suspend fun saveCredential(email: String, password: String, context: Any): AppResult<Unit>
-
-    suspend fun getSavedCredential(context: Any): AppResult<Credential>
-
-    suspend fun signInWithGoogle(context: Any): AppResult<AuthUser>
+    suspend fun signInWithGoogleCredential(credential: AuthCredential.Google): AppResult<AuthUser>
 }

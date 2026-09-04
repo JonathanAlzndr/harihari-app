@@ -36,6 +36,12 @@ android {
             "DEVICE_IP",
             "\"${localProperties.getProperty("DEVICE_IP", "10.0.2.2")}\""
         )
+
+        buildConfigField(
+            "String",
+            "GOOGLE_WEB_CLIENT_ID",
+            "\"${localProperties.getProperty("GOOGLE_WEB_CLIENT_ID", "")}\""
+        )
     }
 
     buildTypes {

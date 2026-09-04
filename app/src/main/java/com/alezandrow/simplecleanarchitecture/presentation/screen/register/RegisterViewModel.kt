@@ -1,11 +1,13 @@
 package com.alezandrow.simplecleanarchitecture.presentation.screen.register
 
+import android.content.Context
 import android.util.Log
+import androidx.credentials.CredentialManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alezandrow.simplecleanarchitecture.common.AppResult
+import com.alezandrow.simplecleanarchitecture.presentation.helper.CredentialAuthHelper
 import com.alezandrow.simplecleanarchitecture.domain.entities.user.AuthUser
-import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SaveCredentialUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SendEmailVerificationUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignUpUseCase
 import com.alezandrow.simplecleanarchitecture.domain.validation.ValidationResult
@@ -27,7 +29,7 @@ class RegisterViewModel @Inject constructor(
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val sendEmailVerificationUseCase: SendEmailVerificationUseCase,
-    private val saveCredentialUseCase: SaveCredentialUseCase,
+    private val credentialManager: CredentialManager
 ) : ViewModel() {
 
     private var _authUiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
@@ -48,7 +50,7 @@ class RegisterViewModel @Inject constructor(
         _formState.update { it.copy(confirmPassword = newValue, passwordError = null) }
     }
 
-    fun signUp(context: Any) {
+    fun signUp(context: Context) {
         val currentForm = _formState.value
 
         val emailResult = validateEmailUseCase(currentForm.email)
@@ -89,16 +91,17 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
-    private suspend fun saveCredential(email: String, password: String, context: Any) {
-            when (val result = saveCredentialUseCase(email, password, context)) {
-                is AppResult.Error -> {
-                    Log.e("RegisterViewModel", "saveCredential: ${result.error}")
-                }
-
-                is AppResult.Success<*> -> {
-                    Log.d("RegisterViewModel", "saveCredential: ${result.data}")
-                }
+    private suspend fun saveCredential(email: String, password: String, context: Context) {
+        val launcher = CredentialAuthHelper(context, credentialManager)
+        when (val result = launcher.savePasswordCredential(email, password)) {
+            is AppResult.Error -> {
+                Log.e("RegisterViewModel", "saveCredential: ${result.error}")
             }
+
+            is AppResult.Success<*> -> {
+                Log.d("RegisterViewModel", "saveCredential: ${result.data}")
+            }
+        }
     }
 
 }

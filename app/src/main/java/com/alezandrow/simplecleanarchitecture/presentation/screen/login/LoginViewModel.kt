@@ -1,15 +1,14 @@
 package com.alezandrow.simplecleanarchitecture.presentation.screen.login
 
 import android.content.Context
-import android.util.Log
-import androidx.credentials.PasswordCredential
+import androidx.credentials.CredentialManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alezandrow.simplecleanarchitecture.common.AppResult
-import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.GetSavedCredentialUseCase
+import com.alezandrow.simplecleanarchitecture.presentation.helper.CredentialAuthHelper
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.RefreshCurrentUserUseCase
 import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignInUseCase
-import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignInWithGoogleUseCase
+import com.alezandrow.simplecleanarchitecture.domain.usecase.auth.SignInWithGoogleCredentialUseCase
 import com.alezandrow.simplecleanarchitecture.domain.validation.ValidationResult
 import com.alezandrow.simplecleanarchitecture.domain.validation.validator.ValidateEmailUseCase
 import com.alezandrow.simplecleanarchitecture.domain.validation.validator.ValidatePasswordUseCase
@@ -26,11 +25,11 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
+    private val signInWithGoogleCredentialUseCase: SignInWithGoogleCredentialUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val refreshCurrentUserUseCase: RefreshCurrentUserUseCase,
-    private val getSavedCredentialUseCase: GetSavedCredentialUseCase,
-    private val signInWithGoogleUseCase: SignInWithGoogleUseCase
+    private val credentialManager: CredentialManager
 ) : ViewModel() {
 
     private var _authUiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
@@ -73,14 +72,12 @@ class LoginViewModel @Inject constructor(
 
     fun signInWithAutoFill(context: Context) {
         viewModelScope.launch {
-            when (val credentialResult = getSavedCredentialUseCase(context)) {
+            val launcher = CredentialAuthHelper(context, credentialManager)
+            when (val result = launcher.getPasswordCredential()) {
                 is AppResult.Error -> {}
                 is AppResult.Success -> {
-                    val credential = credentialResult.data
-                    if (credential is PasswordCredential) {
-                        _authUiState.update { AuthUiState.Loading }
-                        executeLogin(credential.id, credential.password)
-                    }
+                    _authUiState.update { AuthUiState.Loading }
+                    executeLogin(result.data.email, result.data.password)
                 }
             }
         }
@@ -90,16 +87,19 @@ class LoginViewModel @Inject constructor(
         _authUiState.update { AuthUiState.Loading }
 
         viewModelScope.launch {
-            when(val result = signInWithGoogleUseCase(context)) {
-                is AppResult.Error -> {
-                    _authUiState.value = AuthUiState.Error(mapAppErrorToMessage(result.error))
-                }
+            val launcher = CredentialAuthHelper(context, credentialManager)
+            when(val credentialResult = launcher.getGoogleCredential()) {
+                is AppResult.Error ->  _authUiState.value = AuthUiState.Error(mapAppErrorToMessage(credentialResult.error))
                 is AppResult.Success -> {
-                    val refreshedUser = refreshCurrentUserUseCase()
-                    if(refreshedUser?.isEmailVerified == true) {
-                        _authUiState.value = AuthUiState.Success
-                    } else {
-                        Log.d("LoginViewModel", "signInWithGoogle: $result")
+                    when(val result = signInWithGoogleCredentialUseCase(credentialResult.data)) {
+                        is AppResult.Error ->
+                            _authUiState.value = AuthUiState.Error(mapAppErrorToMessage(result.error))
+                        is AppResult.Success -> {
+                            val refreshedUser = refreshCurrentUserUseCase()
+                            if(refreshedUser?.isEmailVerified == true) {
+                                _authUiState.value = AuthUiState.Success
+                            }
+                        }
                     }
                 }
             }
@@ -114,7 +114,7 @@ class LoginViewModel @Inject constructor(
 
             is AppResult.Success -> {
                 val refreshedUser = refreshCurrentUserUseCase()
-                if(refreshedUser?.isEmailVerified == true) {
+                if (refreshedUser?.isEmailVerified == true) {
                     _authUiState.value = AuthUiState.Success
                 } else {
                     _authUiState.value = AuthUiState.Error("Email not verified")

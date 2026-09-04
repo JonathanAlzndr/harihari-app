@@ -55,9 +55,9 @@
     <string name="greeting_afternoon">Hello, Good Afternoon!</string>
     <string name="greeting_evening">Hello, Good Evening!</string>
     <string name="greeting_night">Hello, Good Night!</string>
-    <string
-        name="asset_statements"
-        translatable="false">
+    <string name="confirm_password_label">Confirm Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="asset_statements" translatable="false">
     [{
         \"include\": \"https://harihari-app.web.app/.well-known/assetlinks.json\"
     }]
